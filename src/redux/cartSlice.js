@@ -5,7 +5,7 @@ const initialState = {
 };
 
 const findProduct = (cart, productId, size) =>
-  cart.find((item) => item._id === productId && item.selectedSize === size);
+  cart.find((item) => item._id === productId && item.selectedSize.size === size.size);
 
 const cartSlice = createSlice({
   name: "cart",
@@ -28,9 +28,11 @@ const cartSlice = createSlice({
     },
 
     deleteProduct: (state, action) => {
-      const productId = action.payload;
-      state.cart = state.cart.filter((item) => item._id !== productId);
-    },
+      const { productId, size } = action.payload;
+      state.cart = state.cart.filter(
+        (item) => !(item._id === productId && item.selectedSize.size === size.size)
+      );
+    },    
 
     clearCart: (state) => {
       state.cart = [];
@@ -41,12 +43,20 @@ const cartSlice = createSlice({
       const product = findProduct(state.cart, productId, size);
       if (product) product.quantity += 1;
     },
-
+    
     decrementQuantity: (state, action) => {
       const { productId, size } = action.payload;
       const product = findProduct(state.cart, productId, size);
-      if (product && product.quantity > 1) product.quantity -= 1;
-    },
+      if (product) {
+        if (product.quantity > 1) {
+          product.quantity -= 1;
+        } else {
+          state.cart = state.cart.filter(
+            (item) => !(item._id === productId && item.selectedSize.size === size.size)
+          );
+        }
+      }
+    },    
   },
 });
 

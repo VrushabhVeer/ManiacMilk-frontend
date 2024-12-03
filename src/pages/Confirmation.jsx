@@ -119,6 +119,10 @@ const Confirmation = () => {
     }
   };
 
+  console.log("address", address)
+  console.log("cartItems", cart)
+
+
   return (
     <div className="hero w-full">
       <div className="w-11/12 md:w-10/12 lg:w-10/12 mx-auto pt-10 pb-10 md:pb-20">

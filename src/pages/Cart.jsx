@@ -8,13 +8,18 @@ import {
   incrementQuantity,
   decrementQuantity,
 } from "../redux/cartSlice";
+import Modal from "../components/common/Modal";
+import { useState } from "react";
 
 const Cart = () => {
   const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalAction, setModalAction] = useState(null);
+  const [selectedProductId, setSelectedProductId] = useState(null);
 
   const subtotal = cart.reduce((total, item) => {
-    return total + parseFloat((item.price * item.quantity).toFixed(2));
+    return total + parseFloat((item.selectedSize?.price || 0) * item.quantity);
   }, 0);
 
   const shipping = cart.length > 0 ? 20 : 0;
@@ -25,14 +30,17 @@ const Cart = () => {
     0
   );
 
-  const handleRemove = (productId) => {
-    dispatch(deleteProduct(productId));
-  };
-
   const handleClearCart = () => {
-    dispatch(clearCart());
+    setModalAction("clear");
+    setIsModalOpen(true);
   };
 
+  const handleRemove = (productId, size) => {
+    setSelectedProductId({ productId, size });
+    setModalAction("remove");
+    setIsModalOpen(true);
+  };
+  
   const handleIncrement = (productId, size) => {
     dispatch(incrementQuantity({ productId, size }));
   };
@@ -41,8 +49,33 @@ const Cart = () => {
     dispatch(decrementQuantity({ productId, size }));
   };
 
+  const handleConfirm = () => {
+    if (modalAction === "clear") {
+      dispatch(clearCart());
+    } else if (modalAction === "remove" && selectedProductId) {
+      dispatch(deleteProduct(selectedProductId));
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="hero">
+      <Modal
+        isOpen={isModalOpen}
+        title={modalAction === "clear" ? "Clear Cart" : "Remove Item"}
+        message={
+          modalAction === "clear"
+            ? "Are you sure you want to clear the cart?"
+            : "Are you sure you want to remove this item from the cart?"
+        }
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
+
       <div className="w-11/12 md:w-10/12 mx-auto pt-10 pb-10 md:pb-20">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 text-center">
           Your Cart
@@ -103,13 +136,15 @@ const Cart = () => {
                     />
                     <div className="flex-1">
                       <h3 className="text-lg font-bold">{item.name}</h3>
-                      <p className="text-gray-500">Size: {item.selectedSize}</p>
                       <p className="text-gray-500">
-                        Price: ₹ {item.price}/
+                        Size: {item.selectedSize.size}
+                      </p>
+                      <p className="text-gray-500">
+                        Price: ₹ {item.selectedSize.price}/
                         <span className="text-[12px]">per unit</span>
                       </p>
                       <p className="text-gray-800 font-semibold mt-1">
-                        Total: ₹ {item.price * item.quantity}
+                        Total: ₹ {item.selectedSize.price * item.quantity}
                       </p>
 
                       <div className="flex items-center mt-2">
@@ -137,7 +172,7 @@ const Cart = () => {
                       </div>
 
                       <button
-                        onClick={() => handleRemove(item._id)}
+                        onClick={() => handleRemove(item._id, item.selectedSize)}
                         className="mt-2 text-red-500 text-sm hover:underline"
                       >
                         Remove

@@ -23,7 +23,7 @@ const Products = () => {
   }, []);
 
   const handleCart = (product) => {
-    const defaultSize = product.sizes[0];
+    const defaultSize = product.sizes[product.sizes.length - 1];
     dispatch(setCart({ ...product, quantity: 1, selectedSize: defaultSize }));
     toast.success("Added to Cart");
   };
@@ -53,8 +53,10 @@ const Products = () => {
             <div className="p-3">
               <h2 className="text-lg font-bold mt-2">{product.name}</h2>
               <p className="mt-1">
-                Rs. {product.price}
-                <span className="text-sm text-gray-500">/per {product.unit}</span>
+                Rs. {product.sizes[product.sizes.length - 1].price}
+                <span className="text-sm text-gray-500">
+                  /per {product.unit}
+                </span>
               </p>
             </div>
 

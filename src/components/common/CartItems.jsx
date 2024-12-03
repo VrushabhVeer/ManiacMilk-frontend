@@ -3,13 +3,11 @@ import { useSelector } from "react-redux";
 const CartItems = () => {
   const { cart } = useSelector((state) => state.cart);
 
-  const subtotal = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+  const subtotal = cart.reduce((total, item) => {
+    return total + parseFloat((item.selectedSize?.price || 0) * item.quantity);
+  }, 0);
   const shipping = cart.length > 0 ? 20 : 0;
   const total = subtotal + shipping;
-
   const totalItemsInCart = cart.reduce(
     (total, item) => total + item.quantity,
     0
@@ -38,8 +36,14 @@ const CartItems = () => {
 
           <div className="flex-1">
             <h3 className="font-bold">{item.name}</h3>
-            <p className="text-gray-500 text-sm mt-1">₹ {item.price}</p>
-            <p className="text-gray-500">{item.size}</p>
+            {/* <p className="text-gray-600 text-sm mt-1">₹ {item.selectedSize.price}/ per {item.selectedSize.size}</p> */}
+
+            <p className="mt-1 text-sm">
+              Rs. {item.selectedSize.price}
+              <span className="text-[12px] text-gray-500">
+                /per {item.unit}
+              </span>
+            </p>
           </div>
         </div>
       ))}

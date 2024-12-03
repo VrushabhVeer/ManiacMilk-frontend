@@ -30,11 +30,11 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-// API Methods
-
 // User APIs
-export const signup = (payload) => axiosInstance.post("/users/signup", payload);
-export const login = (payload) => axiosInstance.post("/users/login", payload);
+export const login = (payload) =>
+  axiosInstance.post("/users/send_otp", payload);
+export const otpVerification = (payload) =>
+  axiosInstance.post("users/otp_verification", payload);
 
 // Product APIs
 export const getAllProducts = () => axiosInstance.get("/products/allproducts");

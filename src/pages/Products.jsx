@@ -21,6 +21,7 @@ const Products = () => {
     "Lassi",
     "Buttermilk",
   ];
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -53,7 +54,7 @@ const Products = () => {
   };
 
   const handleCart = (product) => {
-    const defaultSize = product.sizes[0];
+    const defaultSize = product.sizes[product.sizes.length - 1];
     dispatch(setCart({ ...product, quantity: 1, selectedSize: defaultSize }));
     toast.success("Added to Cart");
   };
@@ -67,10 +68,11 @@ const Products = () => {
           {categories.map((category) => (
             <div
               key={category}
-              className={`cursor-pointer px-5 py-2 border border-gray-300 rounded-full ${selectedCategory === category
-                ? "bg-green-200"
-                : "bg-green-50 hover:bg-green-100"
-                }`}
+              className={`cursor-pointer px-5 py-2 border border-gray-300 rounded-full ${
+                selectedCategory === category
+                  ? "bg-green-200"
+                  : "bg-green-50 hover:bg-green-100"
+              }`}
               onClick={() => handleCategoryClick(category)}
             >
               {category}
@@ -79,7 +81,9 @@ const Products = () => {
         </div>
 
         {/* Products Grid */}
-        {loading ? <Loader /> : (
+        {loading ? (
+          <Loader />
+        ) : (
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-20 mt-20">
             {filteredProducts.map((product) => (
               <div key={product._id}>
@@ -100,7 +104,7 @@ const Products = () => {
                 <div className="p-3">
                   <h2 className="text-lg font-bold">{product.name}</h2>
                   <p className="mt-1">
-                    Rs. {product.price}
+                    Rs. {product.sizes[product.sizes.length - 1].price}
                     <span className="text-sm text-gray-500">
                       /per {product.unit}
                     </span>
@@ -115,8 +119,8 @@ const Products = () => {
                 </button>
               </div>
             ))}
-          </div>)
-        }
+          </div>
+        )}
       </div>
       <Toaster position="bottom-center" />
     </>

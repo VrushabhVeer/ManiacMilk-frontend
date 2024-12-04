@@ -1,43 +1,38 @@
 import { useEffect, useState } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
-import { Link } from "react-router-dom";
-import { singleOrder } from "../utils/apis";
+import { Link, useParams } from "react-router-dom";
 import leftArrow from "../assets/icons/leftArrow.png";
+import Loader from "../components/common/Loader";
+import { singleOrder } from "../utils/apis";
 
 const Placed = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { orderId } = useParams();
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const fetchedOrders = await singleOrder();
-        setOrders(fetchedOrders);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
+        const response = await singleOrder(orderId);
+        setOrders(response.data.orders || []);
+      } catch (error) {
+        console.error(error.message);
+      } finally {
         setLoading(false);
       }
     };
     fetchOrders();
-  }, []);
+  }, [orderId]);
 
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
-        <p>Loading...</p>
+        <Loader />
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <p>Error: {error}</p>
-      </div>
-    );
-  }
+console.log("first", orders)
 
   return (
     <div className="hero w-full pb-20 pt-1">
@@ -52,7 +47,7 @@ const Placed = () => {
             />
           </div>
           <h2 className="text-4xl text-center font-bold text-[#1a1d20] mt-6">
-            Orders Placed
+            Order Summary
           </h2>
           <p className="text-lg text-center text-gray-600 mt-2">
             Thank you for shopping with us!
@@ -60,27 +55,53 @@ const Placed = () => {
         </div>
 
         <div className="mt-10 border p-3">
-          {orders.length > 0 ? (
+          {Array.isArray(orders) && orders.length > 0 ? (
             orders.map((order, index) => (
-              <div
-                key={order._id || index}
-                className="mb-5 border-b pb-3"
-              >
-                <h4 className="font-semibold">
-                  Order #{index + 1}
-                </h4>
+              <div key={order._id || index} className="mb-5 border-b pb-5">
+                <h4 className="font-semibold">Order #{index + 1}</h4>
                 <p className="text-gray-600">
-                  Payment: {order.paymentMethod || "N/A"}
+                  Payment Method: {order.paymentMethod || "N/A"}
                 </p>
+                <p className="text-gray-600">Total: ₹{order.total || 0}</p>
                 <p className="text-gray-600">
-                  Total: ₹{order.total || 0}
+                  Address: {order.address?.fullname || "N/A"},{" "}
+                  {order.address?.house}, {order.address?.area},{" "}
+                  {order.address?.city}, {order.address?.state},{" "}
+                  {order.address?.pincode}
                 </p>
-                <p className="text-gray-600">
-                  Address: {order.address?.fullName || "N/A"}
-                </p>
-                <p className="text-gray-600">
-                  Items: {order.cartItems?.length || 0}
-                </p>
+                <h5 className="font-semibold mt-3">Items in Order:</h5>
+                {order.cartItems?.map((item, itemIndex) => (
+                  <div
+                    key={item._id || itemIndex}
+                    className="mt-2 border rounded p-3"
+                  >
+                    <div className="flex items-center gap-4">
+                      <img
+                        src={item.frontImage}
+                        alt={item.name}
+                        className="w-16 h-16 rounded"
+                        loading="lazy"
+                      />
+                      <div>
+                        <p className="font-medium">{item.name}</p>
+                        <p className="text-gray-600">
+                          Size: {item.selectedSize?.size || "N/A"}
+                        </p>
+                        <p className="text-gray-600">
+                          Price: ₹{item.selectedSize?.price || 0}
+                        </p>
+                        <p className="text-gray-600">
+                          Quantity: {item.quantity || 0}
+                        </p>
+                        <p className="text-gray-600">
+                          Subtotal: ₹
+                          {(item.selectedSize?.price || 0) *
+                            (item.quantity || 0)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             ))
           ) : (

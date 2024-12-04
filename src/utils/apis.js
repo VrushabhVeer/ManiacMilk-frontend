@@ -60,13 +60,10 @@ export const paymentVerification = (payload) =>
 export const CALLBACK_URL = `${axiosInstance.defaults.baseURL}/payment/paymentverification`;
 
 // Orders APIs
-export const placeOrder = (payload) => {
-  const isGuest = payload.guestUser || false;
-  return axiosInstance.post(`/order/place`, { ...payload, guestUser: isGuest });
-};
+export const placeOrder = (payload) => axiosInstance.post("/order/place", payload);
 
-export const getOrders = () => axiosInstance.get("/orders/allorders");
-export const singleOrder = (id) => axiosInstance.get(`/orders/${id}`);
+export const getAllOrders = () => axiosInstance.get("/order/allorders");
+export const singleOrder = (orderId) => axiosInstance.get(`/order/${orderId}`);
 
 // Cart APIs
 export const addToCart = (payload) => axiosInstance.post("/cart/add", payload);
@@ -78,3 +75,8 @@ export const updateCartItem = (itemId, payload) =>
 
 export const removeFromCart = (itemId) =>
   axiosInstance.delete(`/cart/remove/${itemId}`);
+
+
+/// create user API for guest users
+
+export const createUser = (payload) => axiosInstance.post("/users/create", payload);

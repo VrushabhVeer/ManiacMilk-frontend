@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { setAddress } from "../redux/addressSlice";
 import { Link, useNavigate } from "react-router-dom";
 import CartItems from "../components/common/CartItems";
+import { createUser } from "../utils/apis";
 
 const Checkout = () => {
   const [fullname, setFullname] = useState("");
@@ -90,24 +91,47 @@ const Checkout = () => {
       state,
     };
 
-    dispatch(setAddress(addressData));
-    navigate("/confirmation");
+    const userData = {
+      fullname,
+      mobile,
+      email,
+    };
+
+    try {
+      // Call the API to create or fetch the user
+      const response = await createUser(userData);
+
+      if (response.status === 200) {
+        const user = response.data;
+        dispatch(setAddress({ ...addressData, userId: user._id }));
+        navigate("/confirmation");
+      } else {
+        throw new Error("Unexpected response status");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Unable to proceed. Please try again.");
+    }
   };
 
   return (
     <div className="hero w-full pb-20 pt-10">
       <div className="w-11/12 md:w-10/12 mx-auto">
         <h1 className="text-4xl font-extrabold text-[#1a1d20]">Checkout</h1>
-        <p className="text-gray-600 mt-1">Enter your address & contact details below.</p>
+        <p className="text-gray-600 mt-1">
+          Enter your address & contact details below.
+        </p>
 
         <div className="flex justify-between flex-col md:flex-row gap-10 md:gap-20 mt-10">
           <form onSubmit={handleSubmit} className="w-full">
             <div>
               <div className="flex justify-between ">
-              <h2 className="text-lg font-semibold">Contact Details</h2>
-              <p className="text-sm underline font-medium mt-2"><Link className="text-blue-500" to="/login">
-            Login
-          </Link></p>
+                <h2 className="text-lg font-semibold">Contact Details</h2>
+                <p className="text-sm underline font-medium mt-2">
+                  <Link className="text-blue-500" to="/login">
+                    Login
+                  </Link>
+                </p>
               </div>
               <div className="mt-4">
                 <input
@@ -208,7 +232,9 @@ const Checkout = () => {
                     onChange={(e) => setPincode(e.target.value)}
                   />
                   {errors.pincode && (
-                    <p className="text-red-500 text-sm mt-1">{errors.pincode}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.pincode}
+                    </p>
                   )}
                 </div>
               </div>

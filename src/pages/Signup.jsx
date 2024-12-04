@@ -1,9 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import rightArrow from "../assets/icons/rightArrow.png";
 import show from "../assets/icons/show.png";
 import hide from "../assets/icons/hide.png";
 import { useState } from "react";
-import { signup } from "../utils/apis";
 import toast, { Toaster } from "react-hot-toast";
 
 const Signup = () => {
@@ -12,7 +11,7 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
@@ -56,16 +55,18 @@ const Signup = () => {
       password,
     };
 
-    try {
-      const response = await signup(signupData);
-      console.log(response);
+    console.log(signupData)
 
-      setTimeout(() => {
-        navigate("/login")
-      }, 1500)
-    } catch (error) {
-      console.error(error);
-    }
+    // try {
+    //   const response = await signup(signupData);
+    //   console.log(response);
+
+    //   setTimeout(() => {
+    //     navigate("/login")
+    //   }, 1500)
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
 
   return (

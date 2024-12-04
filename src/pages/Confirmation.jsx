@@ -13,19 +13,19 @@ import {
 import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 import useRazorpayScript from "../utils/razorpayScript.js";
+import { useNavigate } from "react-router-dom";
 
 const Confirmation = () => {
   // Load Razorpay script
   useRazorpayScript();
-
+  const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState("razorpay");
   const { cart } = useSelector((state) => state.cart);
   const { address } = useSelector((state) => state.address);
 
-  const subtotal = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+  const subtotal = cart.reduce((total, item) => {
+    return total + parseFloat((item.selectedSize?.price || 0) * item.quantity);
+  }, 0);
   const shipping = cart.length > 0 ? 20 : 0;
   const total = subtotal + shipping;
 
@@ -47,9 +47,12 @@ const Confirmation = () => {
     }
   };
 
+  console.log("Subtotal:", subtotal, "Total:", total);
+
   const handleCheckout = async () => {
     try {
       const orderDetails = {
+        userId: address.userId,
         cartItems: cart,
         address,
         paymentMethod,
@@ -59,9 +62,14 @@ const Confirmation = () => {
       };
 
       if (paymentMethod === "cod") {
-        const { data } = await placeOrder(orderDetails);
-        if (data.success) {
-          window.location.href = `/placed/${data.order._id}`;
+        const response = await placeOrder(orderDetails);
+
+        if (response?.data?.success) {
+          const { order } = response.data;
+          // window.location.href = `/placed/${order._id}`;
+          navigate(`/placed/${order._id}`)
+        } else {
+          throw new Error(response?.data?.message || "Order placement failed.");
         }
         return;
       }
@@ -102,7 +110,8 @@ const Confirmation = () => {
 
             const { data } = await placeOrder(orderDetails);
             if (data.success) {
-              window.location.href = `/placed/${data.order._id}`;
+              // window.location.href = `/placed/${data.order._id}`;
+              navigate(`/placed/${data.order._id}`)
             }
           } catch (error) {
             console.error("Payment verification failed:", error);
@@ -114,14 +123,13 @@ const Confirmation = () => {
       const razorpayInstance = new window.Razorpay(options);
       razorpayInstance.open();
     } catch (error) {
-      console.error("Checkout error:", error);
+      console.error("Checkout error:", error.message);
       toast.error("Checkout failed. Please try again.");
     }
   };
 
-  console.log("address", address)
-  console.log("cartItems", cart)
-
+  console.log("address", address);
+  console.log("cart", cart);
 
   return (
     <div className="hero w-full">
@@ -143,11 +151,10 @@ const Confirmation = () => {
               <div className="mt-3 border border-orange-300 p-5 rounded-md space-y-4">
                 {/* Razorpay Option */}
                 <div
-                  className={`flex items-center w-full p-4 border rounded-md cursor-pointer ${
-                    paymentMethod === "razorpay"
-                      ? "bg-green-100 border-green-500"
-                      : "hover:bg-gray-100"
-                  }`}
+                  className={`flex items-center w-full p-4 border rounded-md cursor-pointer ${paymentMethod === "razorpay"
+                    ? "bg-green-100 border-green-500"
+                    : "hover:bg-gray-100"
+                    }`}
                   onClick={() => setPaymentMethod("razorpay")}
                 >
                   {/* Radio Button */}
@@ -175,11 +182,10 @@ const Confirmation = () => {
 
                 {/* Cash on Delivery Option */}
                 <div
-                  className={`flex items-center w-full p-4 border rounded-md cursor-pointer ${
-                    paymentMethod === "cod"
-                      ? "bg-green-100 border-green-500"
-                      : "hover:bg-gray-100"
-                  }`}
+                  className={`flex items-center w-full p-4 border rounded-md cursor-pointer ${paymentMethod === "cod"
+                    ? "bg-green-100 border-green-500"
+                    : "hover:bg-gray-100"
+                    }`}
                   onClick={() => setPaymentMethod("cod")}
                 >
                   <div className="mr-3">

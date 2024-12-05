@@ -18,12 +18,14 @@ const Hero = () => {
             delights, we ensure every product is as fresh as nature intended.
           </p>
 
-          <Link to="/products">
-            <button className="bg-green-900 text-white px-6 py-3 rounded-full tracking-wide font-medium mt-8 flex items-center gap-2">
-              Explore Now{" "}
-              <img className="w-4" src={rightArrow} alt="right-arrow" loading="lazy" />
-            </button>
-          </Link>
+          <div className="mt-8 flex">
+            <Link to="/products">
+              <button className="bg-green-900 text-white px-6 py-3 rounded-full tracking-wide font-medium flex items-center gap-2">
+                Explore Now{" "}
+                <img className="w-4" src={rightArrow} alt="right-arrow" loading="lazy" />
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
 

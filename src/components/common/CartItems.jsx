@@ -26,7 +26,7 @@ const CartItems = () => {
             <img
               src={item.frontImage}
               alt={item.name}
-              className="w-16 h-16 object-cover rounded border"
+              className="w-20 h-20 object-cover rounded border"
             />
 
             <span className="absolute top-[-8px] right-[-10px] bg-black text-white bg-opacity-50 pt-0.5 font-semibold rounded-full w-5 h-5 flex items-center justify-center text-xs">

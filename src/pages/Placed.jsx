@@ -1,27 +1,40 @@
 import { useEffect, useState } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { Link, useParams } from "react-router-dom";
-import leftArrow from "../assets/icons/leftArrow.png";
-import Loader from "../components/common/Loader";
 import { singleOrder } from "../utils/apis";
+import leftArrow from "../assets/icons/leftArrow.png";
+import copy from "../assets/icons/copy.png";
+import check from "../assets/icons/check.png";
+import Loader from "../components/common/Loader";
 
 const Placed = () => {
-  const [orders, setOrders] = useState([]);
+  const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const { orderId } = useParams();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard
+      .writeText(order.razorpayPaymentId)
+      .then(() => {
+        setCopied(true); // Show "Copied" text
+        setTimeout(() => setCopied(false), 2000); // Reset to "Copy" after 2 seconds
+      })
+      .catch(() => alert("Failed to copy Payment ID"));
+  };
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchOrder = async () => {
       try {
         const response = await singleOrder(orderId);
-        setOrders(response.data.orders || []);
+        setOrder(response.data.orders?.[0] || null);
       } catch (error) {
-        console.error(error.message);
+        console.error("Error fetching order:", error.message);
       } finally {
         setLoading(false);
       }
     };
-    fetchOrders();
+    fetchOrder();
   }, [orderId]);
 
   if (loading) {
@@ -32,13 +45,23 @@ const Placed = () => {
     );
   }
 
-console.log("first", orders)
+  if (!order) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <p>No order details found.</p>
+      </div>
+    );
+  }
+
+  const { address, paymentMethod, subtotal, shipping, total, cartItems } =
+    order;
 
   return (
-    <div className="hero w-full pb-20 pt-1">
-      <div className="w-11/12 md:w-5/12 mx-auto">
-        <div>
-          <div className="w-3/12 md:w-2/12 mx-auto">
+    <div className="hero w-full pb-20 pt-10">
+      <div className="w-11/12 md:w-10/12 mx-auto">
+        {/* Header Section */}
+        <div className="flex flex-row items-center gap-3">
+          <div className="w-12 md:w-20">
             <Player
               autoplay
               loop
@@ -46,80 +69,150 @@ console.log("first", orders)
               className="max-w-full"
             />
           </div>
-          <h2 className="text-4xl text-center font-bold text-[#1a1d20] mt-6">
-            Order Summary
-          </h2>
-          <p className="text-lg text-center text-gray-600 mt-2">
-            Thank you for shopping with us!
-          </p>
+          <div>
+            <h1 className="text-2xl font-bold text-[#1a1d20]">Order Placed</h1>
+            <h3>Thank you, {address?.fullname}, for shopping with us!</h3>
+          </div>
         </div>
 
-        <div className="mt-10 border p-3">
-          {Array.isArray(orders) && orders.length > 0 ? (
-            orders.map((order, index) => (
-              <div key={order._id || index} className="mb-5 border-b pb-5">
-                <h4 className="font-semibold">Order #{index + 1}</h4>
-                <p className="text-gray-600">
-                  Payment Method: {order.paymentMethod || "N/A"}
-                </p>
-                <p className="text-gray-600">Total: ₹{order.total || 0}</p>
-                <p className="text-gray-600">
-                  Address: {order.address?.fullname || "N/A"},{" "}
-                  {order.address?.house}, {order.address?.area},{" "}
-                  {order.address?.city}, {order.address?.state},{" "}
-                  {order.address?.pincode}
-                </p>
-                <h5 className="font-semibold mt-3">Items in Order:</h5>
-                {order.cartItems?.map((item, itemIndex) => (
-                  <div
-                    key={item._id || itemIndex}
-                    className="mt-2 border rounded p-3"
-                  >
-                    <div className="flex items-center gap-4">
+        {/* Order Details Section */}
+        <h4 className="font-semibold mt-10">Order Details</h4>
+        <div className="flex justify-between flex-col md:flex-row gap-10 md:gap-20 mt-2">
+          {/* Left Section */}
+          <div className="border p-5 w-full">
+            <div className="text-gray-600">
+              <p className="text-[#1a1d20] font-semibold">Payment Method</p>
+              <p className="mt-1">
+                {paymentMethod === "cod"
+                  ? "Cash On Delivery"
+                  : "Online Payment (Razorpay)"}
+              </p>
+              {paymentMethod === "razorpay" && (
+                <p className="flex items-center">
+                  Payment ID:{" "}
+                  <span className="text-[#1a1d20] font-semibold">
+                    {order.razorpayPaymentId}
+                  </span>
+                  <button className="ml-4" onClick={handleCopy}>
+                    {copied ? (
                       <img
-                        src={item.frontImage}
-                        alt={item.name}
-                        className="w-16 h-16 rounded"
+                        src={check}
+                        alt="Check"
+                        className="w-4"
                         loading="lazy"
                       />
-                      <div>
-                        <p className="font-medium">{item.name}</p>
-                        <p className="text-gray-600">
-                          Size: {item.selectedSize?.size || "N/A"}
-                        </p>
-                        <p className="text-gray-600">
-                          Price: ₹{item.selectedSize?.price || 0}
-                        </p>
-                        <p className="text-gray-600">
-                          Quantity: {item.quantity || 0}
-                        </p>
-                        <p className="text-gray-600">
-                          Subtotal: ₹
-                          {(item.selectedSize?.price || 0) *
-                            (item.quantity || 0)}
-                        </p>
-                      </div>
-                    </div>
+                    ) : (
+                      <img
+                        src={copy}
+                        alt="copy"
+                        className="w-4"
+                        loading="lazy"
+                      />
+                    )}
+                  </button>
+                </p>
+              )}
+              <p className="mt-1">
+                Total:{" "}
+                <span className="text-[#1a1d20] font-semibold">₹ {total}</span>
+              </p>
+            </div>
+
+            {/* Contact Details */}
+            <div className="text-gray-600 mt-4">
+              <p className="text-[#1a1d20] font-semibold">Contact Details</p>
+              <p className="mt-1">{address?.email}</p>
+              <p>+91 {address?.mobile}</p>
+            </div>
+
+            {/* Address Details */}
+            <div className="text-gray-600 mt-4">
+              <p className="text-[#1a1d20] font-semibold">Address Details</p>
+              <p className="mt-1">{address?.fullname},</p>
+              <p>
+                {address?.house}, {address?.area},
+              </p>
+              <p>{address?.city},</p>
+              <p>
+                {address?.state}, {address?.pincode},
+              </p>
+              <p>India</p>
+            </div>
+          </div>
+
+          {/* Right Section */}
+          <div className="w-full">
+            <div>
+              {cartItems?.map((item) => (
+                <div
+                  key={item._id}
+                  className="flex items-center gap-5 border-b border-gray-200 pb-4"
+                >
+                  <div className="relative">
+                    <img
+                      src={item.frontImage}
+                      alt={item.name}
+                      className="w-20 h-20 object-cover rounded border"
+                    />
+                    <span className="absolute top-[-8px] right-[-10px] bg-black text-white bg-opacity-50 pt-0.5 font-semibold rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                      {item.quantity}
+                    </span>
                   </div>
-                ))}
+                  <div className="flex-1">
+                    <h3 className="font-bold">{item.name}</h3>
+                    <p className="mt-1 text-sm">
+                      Rs. {item.selectedSize.price}
+                      <span className="text-[12px] text-gray-500">
+                        /per {item.unit}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              ))}
+
+              {/* Summary Section */}
+              <div className="space-y-4 mt-4">
+                <div className="flex justify-between">
+                  <p>Subtotal</p>
+                  <p>₹ {subtotal}</p>
+                </div>
+                <div className="flex justify-between">
+                  <p>Shipping</p>
+                  <p>₹ {shipping}</p>
+                </div>
+                <div className="flex justify-between border-t pt-4">
+                  <div>
+                    <p className="font-semibold">Total</p>
+                    <p className="text-[13px] font-light text-gray-600">
+                      Including ₹0.00 in taxes
+                    </p>
+                  </div>
+                  <p className="font-semibold">
+                    <span className="text-[13px] font-light text-gray-600">
+                      INR
+                    </span>{" "}
+                    ₹ {total}
+                  </p>
+                </div>
               </div>
-            ))
-          ) : (
-            <p>No orders found.</p>
-          )}
+            </div>
+          </div>
         </div>
 
-        <Link to="/products">
-          <button className="bg-green-900 text-white px-10 py-3 rounded-full font-medium tracking-wide mt-8 flex items-center justify-center gap-2">
-            <img
-              src={leftArrow}
-              alt="Continue Shopping"
-              className="w-4"
-              loading="lazy"
-            />
-            Continue Shopping
-          </button>
-        </Link>
+        {/* Continue Shopping Button */}
+        <div className="mt-8 flex">
+          <Link to="/products">
+            <button className="bg-green-900 text-white px-10 py-3 rounded-full font-medium tracking-wide flex items-center justify-center gap-2">
+              <img
+                src={leftArrow}
+                alt="Continue Shopping"
+                className="w-4"
+                loading="lazy"
+              />
+              Continue Shopping
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );

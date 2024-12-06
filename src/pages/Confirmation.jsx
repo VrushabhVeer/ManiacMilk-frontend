@@ -66,7 +66,6 @@ const Confirmation = () => {
 
         if (response?.data?.success) {
           const { order } = response.data;
-          // window.location.href = `/placed/${order._id}`;
           navigate(`/placed/${order._id}`)
         } else {
           throw new Error(response?.data?.message || "Order placement failed.");
@@ -110,7 +109,6 @@ const Confirmation = () => {
 
             const { data } = await placeOrder(orderDetails);
             if (data.success) {
-              // window.location.href = `/placed/${data.order._id}`;
               navigate(`/placed/${data.order._id}`)
             }
           } catch (error) {

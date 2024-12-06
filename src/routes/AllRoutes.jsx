@@ -8,7 +8,6 @@ import ProductDetails from "../pages/ProductDetails";
 import Contact from "../pages/Contact";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
-import Payment from "../pages/Payment";
 import Confirmation from "../pages/Confirmation";
 import Placed from "../pages/Placed";
 import NotFound from "../pages/NotFound";
@@ -26,15 +25,12 @@ const AllRoutes = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/checkout" element={<Checkout />} />
-      <Route path="/payment" element={<Payment />} />
       <Route path="/confirmation" element={<Confirmation />} />
       <Route path="/placed/:orderId" element={<Placed />} />
       <Route path="*" element={<NotFound />} />
 
       {/* admin routes */}
-
       <Route path="/admin" element={<Admin />} />
-
     </Routes>
   );
 };

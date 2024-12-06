@@ -51,16 +51,15 @@ const ProductDetails = () => {
     dispatch(setCart(cartProduct));
     toast.success("Added to Cart");
   };
-  
+
   const handleBuyNow = () => {
-    if (!selectedSize) {
-      toast.error("Please select a size");
+    if (!selectedSize || quantity < 1) {
+      toast.error("Please select a valid size and quantity");
       return;
     }
     const cartProduct = {
       ...product,
-      selectedSize: selectedSize.size,
-      price: selectedSize.price,
+      selectedSize,
       quantity,
     };
     dispatch(setCart(cartProduct));
@@ -96,11 +95,10 @@ const ProductDetails = () => {
                 <div
                   key={index}
                   onClick={() => handleSizeClick(size)}
-                  className={`cursor-pointer py-2 px-4 border text-sm ${
-                    size.size === selectedSize?.size
+                  className={`cursor-pointer py-2 px-4 border text-sm ${size.size === selectedSize?.size
                       ? "bg-green-100 border-2 border-green-400"
                       : "bg-green-50 hover:bg-green-100 border-gray-300"
-                  }`}
+                    }`}
                 >
                   {size.size}
                 </div>
@@ -108,36 +106,45 @@ const ProductDetails = () => {
             </div>
 
             <p className="mt-5 font-medium">Quantity</p>
-            <div className="flex items-center mt-2">
-              <button
-                onClick={() => handleQuantityChange(-1)}
-                className="py-2 px-4 text-sm font-semibold border border-gray-300"
-              >
-                -
-              </button>
-              <div className="py-2 px-4 text-sm font-semibold border-t border-b border-gray-300">
-                {quantity}
+            <div className="flex flex-col items-start mt-2">
+              <div className="flex items-center">
+                <button
+                  onClick={() => handleQuantityChange(-1)}
+                  disabled={quantity <= 1}
+                  className="py-2 px-4 text-sm font-semibold border border-gray-300"
+                >
+                  -
+                </button>
+                <div className="py-2 px-4 text-sm font-semibold border-t border-b border-gray-300">
+                  {quantity}
+                </div>
+                <button
+                  onClick={() => handleQuantityChange(1)}
+                  disabled={quantity >= 4}
+                  className="py-2 px-4 text-sm font-semibold border border-gray-300"
+                >
+                  +
+                </button>
               </div>
-              <button
-                onClick={() => handleQuantityChange(1)}
-                className="py-2 px-4 text-sm font-semibold border border-gray-300"
-              >
-                +
-              </button>
+              {quantity > 4 && (
+                <p className="text-red-600 text-sm mt-2">
+                  Maximum limit of 4 items reached.
+                </p>
+              )}
             </div>
 
             <div className="flex items-center gap-3 mt-6">
               <button
                 className="bg-green-900 text-white px-8 py-3 uppercase rounded-full tracking-wide font-medium text-sm"
-                onClick={handleBuyNow}
-              >
-                Buy Now
-              </button>
-              <button
-                className="bg-green-900 text-white px-8 py-3 uppercase rounded-full tracking-wide font-medium text-sm"
                 onClick={handleCart}
               >
                 Add to Cart
+              </button>
+              <button
+                className="bg-green-900 text-white px-8 py-3 uppercase rounded-full tracking-wide font-medium text-sm"
+                onClick={handleBuyNow}
+              >
+                Buy Now
               </button>
             </div>
 

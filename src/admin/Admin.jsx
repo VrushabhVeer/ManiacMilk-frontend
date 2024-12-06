@@ -16,11 +16,18 @@ const Admin = () => {
     fetchOrders();
   }, []);
 
-  console.log("first", orders);
+  console.log("orders", orders);
 
   return (
-    <div className="">
-      <div></div>
+    <div className="w-11/12 md:w-10/12 mx-auto mb-10 md:mb-20 pt-10">
+      <div className="text-gray-700 gap-2  flex items-center">
+        
+          <p>Home</p>
+          <p>/Orders</p>
+          <p>/Users</p>
+          <p>/subscribers</p>
+        
+      </div>
     </div>
   );
 };

@@ -17,7 +17,7 @@ const Placed = () => {
     navigator.clipboard
       .writeText(order.razorpayPaymentId)
       .then(() => {
-        setCopied(true); // Show "Copied" text
+        setCopied(true);
         setTimeout(() => setCopied(false), 2000); // Reset to "Copy" after 2 seconds
       })
       .catch(() => alert("Failed to copy Payment ID"));
@@ -71,7 +71,7 @@ const Placed = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-[#1a1d20]">Order Placed</h1>
-            <h3>Thank you, {address?.fullname}, for shopping with us!</h3>
+            <h3>Thank you, <span className="text-orange-500 font-medium text-lg">{address?.fullname}</span>, for shopping with us!</h3>
           </div>
         </div>
 
@@ -160,11 +160,11 @@ const Placed = () => {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-bold">{item.name}</h3>
-                    <p className="mt-1 text-sm">
-                      Rs. {item.selectedSize.price}
-                      <span className="text-[12px] text-gray-500">
-                        /per {item.unit}
-                      </span>
+                    <p className="mt-1 text-sm text-gray-600">
+                      Size: {item.selectedSize.size}
+                    </p>
+                    <p className="text-sm mt-1 text-gray-900 font-medium">
+                      ₹ {item.selectedSize.price}
                     </p>
                   </div>
                 </div>

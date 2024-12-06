@@ -40,7 +40,7 @@ const Cart = () => {
     setModalAction("remove");
     setIsModalOpen(true);
   };
-  
+
   const handleIncrement = (productId, size) => {
     dispatch(incrementQuantity({ productId, size }));
   };
@@ -150,6 +150,7 @@ const Cart = () => {
                       <div className="flex items-center mt-2">
                         <button
                           aria-label="Decrement quantity"
+                          disabled={item.quantity <= 1}
                           onClick={() =>
                             handleDecrement(item._id, item.selectedSize)
                           }
@@ -162,6 +163,7 @@ const Cart = () => {
                         </span>
                         <button
                           aria-label="Increase quantity"
+                          disabled={item.quantity >= 4}
                           onClick={() =>
                             handleIncrement(item._id, item.selectedSize)
                           }
@@ -170,6 +172,11 @@ const Cart = () => {
                           +
                         </button>
                       </div>
+                      {item.quantity >= 4 && (
+                        <p className="text-red-600 text-sm mt-2">
+                          Maximum limit of 4 items reached.
+                        </p>
+                      )}
 
                       <button
                         onClick={() => handleRemove(item._id, item.selectedSize)}

@@ -36,13 +36,11 @@ const CartItems = () => {
 
           <div className="flex-1">
             <h3 className="font-bold">{item.name}</h3>
-            {/* <p className="text-gray-600 text-sm mt-1">₹ {item.selectedSize.price}/ per {item.selectedSize.size}</p> */}
-
-            <p className="mt-1 text-sm">
-              Rs. {item.selectedSize.price}
-              <span className="text-[12px] text-gray-500">
-                /per {item.unit}
-              </span>
+            <p className="mt-1 text-sm text-gray-600">
+              Size: {item.selectedSize.size}
+            </p>
+            <p className="text-sm mt-1 text-gray-900 font-medium">
+              ₹ {item.selectedSize.price}
             </p>
           </div>
         </div>

@@ -30,10 +30,10 @@ const SendOTP = ({ onSuccess }) => {
             return;
         }
 
+        onSuccess(email);
         try {
             const response = await login({ email });
             toast.success(response.data.message);
-            onSuccess(email);
         } catch (error) {
             toast.error(error.response?.data?.message || "An unexpected error occurred.");
         }

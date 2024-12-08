@@ -2,15 +2,13 @@
 import { useState, useRef } from "react";
 import { otpVerification } from "../../utils/apis";
 import { Toaster, toast } from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import rightArrow from "../../assets/icons/rightArrow.png";
 
-const VerifyOTP = ({ email }) => {
+const VerifyOTP = ({ redirectPath,  email }) => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const location = useLocation();
-  const redirectPath = location.state?.from || "/";
   const inputRefs = useRef([]);
 
   const validateInputs = () => {
@@ -40,11 +38,16 @@ const VerifyOTP = ({ email }) => {
       return;
     }
 
+    const fullOtp = otp.join("");
     try {
-      const fullOtp = otp.join("");
       const response = await otpVerification({ email, otp: fullOtp });
       toast.success(response.data.message);
-      navigate(redirectPath);
+      console.log("token", response.data.token);
+
+      // Save token to localStorage
+      localStorage.setItem("token", response.data.token);
+
+      navigate(redirectPath, { replace: true });
     } catch (error) {
       toast.error(error.response?.data?.message || "Error verifying OTP.");
     }
@@ -97,9 +100,8 @@ const VerifyOTP = ({ email }) => {
                 onChange={(e) => handleInputChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 onPaste={handlePaste}
-                className={`w-12 md:w-16 h-12 md:h-16 text-center text-lg bg-inherit rounded-md border ${
-                  errors.otp ? "border-red-500" : "border-gray-400"
-                } outline-none`}
+                className={`w-12 md:w-16 h-12 md:h-16 text-center text-lg bg-inherit rounded-md border ${errors.otp ? "border-red-500" : "border-gray-400"
+                  } outline-none`}
                 maxLength="1"
               />
             ))}

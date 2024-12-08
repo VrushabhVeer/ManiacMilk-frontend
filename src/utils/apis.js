@@ -5,6 +5,7 @@ import { baseURL } from "./data";
 // Create Axios instance
 const axiosInstance = axios.create({
   baseURL: baseURL,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -35,6 +36,7 @@ export const login = (payload) =>
   axiosInstance.post("/users/send_otp", payload);
 export const otpVerification = (payload) =>
   axiosInstance.post("users/otp_verification", payload);
+export const getProfile = () => axiosInstance.get("/users/profile");
 
 // Product APIs
 export const getAllProducts = () => axiosInstance.get("/products/allproducts");
@@ -60,7 +62,8 @@ export const paymentVerification = (payload) =>
 export const CALLBACK_URL = `${axiosInstance.defaults.baseURL}/payment/paymentverification`;
 
 // Orders APIs
-export const placeOrder = (payload) => axiosInstance.post("/order/place", payload);
+export const placeOrder = (payload) =>
+  axiosInstance.post("/order/place", payload);
 
 export const getAllOrders = () => axiosInstance.get("/order/allorders");
 export const singleOrder = (orderId) => axiosInstance.get(`/order/${orderId}`);
@@ -76,7 +79,7 @@ export const updateCartItem = (itemId, payload) =>
 export const removeFromCart = (itemId) =>
   axiosInstance.delete(`/cart/remove/${itemId}`);
 
-
 /// create user API for guest users
 
-export const createUser = (payload) => axiosInstance.post("/users/create", payload);
+export const createUser = (payload) =>
+  axiosInstance.post("/users/create", payload);

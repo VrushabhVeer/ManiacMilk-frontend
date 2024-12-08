@@ -12,13 +12,17 @@ import Confirmation from "../pages/Confirmation";
 import Placed from "../pages/Placed";
 import NotFound from "../pages/NotFound";
 import Admin from "../admin/Admin";
+import PrivateRoute from "../components/login/PrivateRoute";
 
 const AllRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route
+        path="/profile"
+        element={<PrivateRoute element={<Profile />} />}
+      />
       <Route path="/about" element={<About />} />
       <Route path="/products" element={<Products />} />
       <Route path="/products/:productId" element={<ProductDetails />} />

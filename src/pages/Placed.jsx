@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { Link, useParams } from "react-router-dom";
-import { singleOrder } from "../utils/apis";
+import { getOrderByOrderId } from "../utils/apis";
 import leftArrow from "../assets/icons/leftArrow.png";
 import copy from "../assets/icons/copy.png";
 import check from "../assets/icons/check.png";
@@ -26,7 +26,7 @@ const Placed = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await singleOrder(orderId);
+        const response = await getOrderByOrderId(orderId);
         setOrder(response.data.orders?.[0] || null);
       } catch (error) {
         console.error("Error fetching order:", error.message);

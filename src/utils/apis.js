@@ -11,6 +11,21 @@ const axiosInstance = axios.create({
   },
 });
 
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token"); // Retrieve token from localStorage
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`; // Attach token to Authorization header
+    }
+    return config;
+  },
+  (error) => {
+    // Handle request errors
+    toast.error("Request error occurred. Please try again.");
+    return Promise.reject(error);
+  }
+);
+
 // Add interceptors for centralized success and error handling
 axiosInstance.interceptors.response.use(
   (response) => {
@@ -65,8 +80,10 @@ export const CALLBACK_URL = `${axiosInstance.defaults.baseURL}/payment/paymentve
 export const placeOrder = (payload) =>
   axiosInstance.post("/order/place", payload);
 
-export const getAllOrders = () => axiosInstance.get("/order/allorders");
-export const singleOrder = (orderId) => axiosInstance.get(`/order/${orderId}`);
+export const getAllOrders = () => axiosInstance.get("/orders/allorders");
+export const getOrderByOrderId = (orderId) => axiosInstance.get(`/orders/order/${orderId}`);
+export const getOrderByUserId = (userId) => axiosInstance.get(`/orders/user/${userId}`);
+export const cancelOrderById = (orderId) => axiosInstance.put(`/orders/cancel/${orderId}`);
 
 // Cart APIs
 export const addToCart = (payload) => axiosInstance.post("/cart/add", payload);
@@ -80,6 +97,5 @@ export const removeFromCart = (itemId) =>
   axiosInstance.delete(`/cart/remove/${itemId}`);
 
 /// create user API for guest users
-
 export const createUser = (payload) =>
   axiosInstance.post("/users/create", payload);

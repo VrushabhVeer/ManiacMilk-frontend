@@ -105,7 +105,7 @@ export default function Navbar() {
             <Link to="/login">
               <p className="font-medium">Login</p>{" "}
             </Link>
-            
+
             <Link to="/cart" className="relative">
               <img className="w-6" src={bag} alt="bag" loading="lazy" />
               {totalItemsInCart > 0 && (
@@ -116,7 +116,7 @@ export default function Navbar() {
             </Link>
 
             <Link to="/profile">
-            <img className="w-6" src={user} alt="user" loading="lazy" />
+              <img className="w-6" src={user} alt="user" loading="lazy" />
             </Link>
 
           </div>

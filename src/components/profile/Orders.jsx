@@ -1,17 +1,22 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import { cancelOrderById, getOrderByUserId } from "../../utils/apis"; // Import API for cancellation
+import Modal from "../../components/common/Modal"; // Assuming a reusable Modal component
+import { cancelOrderById, getOrderByUserId } from "../../utils/apis"; // API calls
 
 const Orders = ({ userId }) => {
-  const [orders, setOrders] = useState([]);
-  const [expandedOrderId, setExpandedOrderId] = useState(null);
+  const [orders, setOrders] = useState([]); // Orders state
+  const [expandedOrderId, setExpandedOrderId] = useState(null); // To expand/collapse order details
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const [selectedOrderId, setSelectedOrderId] = useState(null); // Order ID selected for cancellation
+  const [loading, setLoading] = useState(false); // Loading state for actions
 
+  // Fetch orders when the component mounts
   useEffect(() => {
     const fetchOrders = async () => {
       if (!userId) return;
       try {
         const response = await getOrderByUserId(userId);
-        setOrders(response.data.orders || []);
+        setOrders(response.data.orders || []); // Populate orders
       } catch (error) {
         console.error("Error fetching orders:", error.message);
       }
@@ -19,33 +24,60 @@ const Orders = ({ userId }) => {
     fetchOrders();
   }, [userId]);
 
+  // Toggle order details
   const toggleOrderDetails = (orderId) => {
     setExpandedOrderId((prev) => (prev === orderId ? null : orderId));
   };
 
-  const handleCancelOrder = async (orderId) => {
-    console.log(" id------------------------", orderId);
+  // Cancel order and update status dynamically
+  const handleCancelOrder = async () => {
+    if (!selectedOrderId) return;
+
+    setLoading(true); // Set loading state
     try {
-      const response = await cancelOrderById(orderId); // Call API to cancel the order
+      const response = await cancelOrderById(selectedOrderId); // Call cancel API
       if (response.success) {
+        // Update the order's status dynamically in the state
         setOrders((prevOrders) =>
           prevOrders.map((order) =>
-            order._id === orderId ? { ...order, status: "Cancelled" } : order
+            order._id === selectedOrderId ? { ...order, status: "Cancelled" } : order
           )
         );
         alert("Order cancelled successfully.");
       } else {
-        alert("Failed to cancel the order.");
+        alert("Failed to cancel the order. Please try again.");
       }
     } catch (error) {
       console.error("Error cancelling order:", error.message);
       alert("An error occurred while cancelling the order.");
+    } finally {
+      setLoading(false); // Reset loading
+      setIsModalOpen(false); // Close modal
     }
   };
 
-  console.log("orders", orders);
+  // Open cancel confirmation modal
+  const openCancelModal = (orderId) => {
+    setSelectedOrderId(orderId);
+    setIsModalOpen(true);
+  };
+
+  // Close modal without action
+  const cancelModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrderId(null);
+  };
+
   return (
     <div className="border p-5 rounded-md">
+      <Modal
+        isOpen={isModalOpen}
+        title="Cancel Order"
+        message="Are you sure you want to cancel this order?"
+        onConfirm={handleCancelOrder} // Confirm cancellation
+        onCancel={cancelModal} // Close modal
+        loading={loading} // Show loading state on confirm button
+      />
       <p className="font-semibold mb-5">My Orders</p>
       {orders.map((order) => (
         <div key={order._id} className="border-b pb-4 mb-4">
@@ -66,7 +98,7 @@ const Orders = ({ userId }) => {
             <div className="mt-4">
               <p className="font-semibold mb-2">Cart Items:</p>
               {order.cartItems.map((item) => (
-                <div key={item._id} className="flex items-start gap-4 mb-3">
+                <div key={item._id} className="flex items-center gap-4 mb-3">
                   <img
                     src={item.frontImage}
                     alt={item.name}
@@ -107,26 +139,25 @@ const Orders = ({ userId }) => {
               {/* Cancel Order Button */}
               <button
                 onClick={() =>
-                  order.status === "Pending" && handleCancelOrder(order._id)
+                  order.status === "Pending" && openCancelModal(order._id)
                 }
-                className={`mt-4 px-4 py-2 text-white text-sm rounded ${
-                  order.status === "Cancelled"
+                className={`mt-4 px-4 py-2 text-white text-sm rounded ${order.status === "Cancelled"
                     ? "bg-gray-500 cursor-not-allowed"
                     : order.status === "Pending"
-                    ? "bg-red-500 hover:bg-red-600"
-                    : order.status === "Completed"
-                    ? "bg-green-500 cursor-not-allowed"
-                    : ""
-                }`}
+                      ? "bg-red-500 hover:bg-red-600"
+                      : order.status === "Completed"
+                        ? "bg-green-500 cursor-not-allowed"
+                        : ""
+                  }`}
                 disabled={order.status !== "Pending"} // Disable button for statuses other than Pending
               >
                 {order.status === "Cancelled"
                   ? "Cancelled"
                   : order.status === "Pending"
-                  ? "Cancel Order"
-                  : order.status === "Completed"
-                  ? "Completed"
-                  : ""}
+                    ? "Cancel Order"
+                    : order.status === "Completed"
+                      ? "Completed"
+                      : ""}
               </button>
             </div>
           )}

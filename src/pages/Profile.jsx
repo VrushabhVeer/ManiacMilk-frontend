@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Address from "../components/common/Address";
+// import Address from "../components/common/Address";
 import { getProfile } from "../utils/apis";
 import Orders from "../components/profile/Orders";
 import CompletedOrders from "../components/profile/CompletedOrders";
@@ -36,13 +36,13 @@ const Profile = () => {
               <p className="font-semibold mt-2">Mobile</p>
               <p className="text-gray-600">{profile?.mobile}</p>
             </div>
-            <Address />
+
+            <address>Address ADD here</address>
           </div>
         );
 
       case "orders":
         return <Orders userId={profile?._id} />;
-
 
       case "completed":
         return <CompletedOrders />;
@@ -57,25 +57,25 @@ const Profile = () => {
         <h2 className="text-2xl font-semibold">Profile</h2>
         <div className="flex items-center gap-3 mt-3">
           <p
-            className={`cursor-pointer ${activeTab === "profile" ? "font-medium" : ""
+            className={`cursor-pointer ${activeTab === "profile" ? "font-semibold" : ""
               }`}
             onClick={() => setActiveTab("profile")}
           >
             My Profile
           </p>
           <p
-            className={`cursor-pointer ${activeTab === "orders" ? "font-medium" : ""
+            className={`cursor-pointer ${activeTab === "orders" ? "font-semibold" : ""
               }`}
             onClick={() => setActiveTab("orders")}
           >
-            / Orders
+            /Orders
           </p>
           <p
-            className={`cursor-pointer ${activeTab === "completed" ? "font-medium" : ""
+            className={`cursor-pointer ${activeTab === "completed" ? "font-semibold" : ""
               }`}
             onClick={() => setActiveTab("completed")}
           >
-            / Completed Orders
+            /Completed Orders
           </p>
         </div>
 

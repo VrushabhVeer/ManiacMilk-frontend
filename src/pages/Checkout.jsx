@@ -207,7 +207,7 @@ const Checkout = () => {
                 )}
               </div>
 
-              <div className="mt-4 flex items-center gap-4">
+              <div className="mt-4 flex flex-col md:flex-row items-center gap-4">
                 <div className="w-full">
                   <input
                     placeholder="City"

@@ -5,15 +5,13 @@ import logo from "../../assets/icons/cow.png";
 import bag from "../../assets/icons/bag.png";
 import user from "../../assets/icons/user.png";
 import { useSelector } from "react-redux";
+import { selectCartDetails } from "../../redux/cartSlice";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrollUp, setScrollUp] = useState(false);
-
-  const { cart } = useSelector((state) => state.cart);
-
-  // Calculate the total number of items in the cart
-  const totalItemsInCart = cart.reduce((total, item) => total + item.quantity, 0);
+  const { totalItemsInCart } = useSelector(selectCartDetails);
+  const token = localStorage.getItem("token");
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -103,7 +101,7 @@ export default function Navbar() {
 
           <div className="flex space-x-5">
             <Link to="/login">
-              <p className="font-medium">Login</p>{" "}
+              <p className="font-medium">{token ? "Logout" : "Login"}</p>
             </Link>
 
             <Link to="/cart" className="relative">

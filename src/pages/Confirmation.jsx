@@ -4,17 +4,17 @@ import logo from "../assets/icons/cow.png";
 import CartItems from "../components/common/CartItems";
 import Address from "../components/common/Address";
 import {
-  addAddress,
   CALLBACK_URL,
   getPayment,
   makePayment,
   paymentVerification,
   placeOrder,
 } from "../utils/apis.js";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 import useRazorpayScript from "../utils/razorpayScript.js";
 import { useNavigate } from "react-router-dom";
+import { clearCart, selectCartDetails } from "../redux/cartSlice.js";
 
 const Confirmation = () => {
   // Load Razorpay script
@@ -23,12 +23,8 @@ const Confirmation = () => {
   const [paymentMethod, setPaymentMethod] = useState("razorpay");
   const { cart } = useSelector((state) => state.cart);
   const { address } = useSelector((state) => state.address);
-
-  const subtotal = cart.reduce((total, item) => {
-    return total + parseFloat((item.selectedSize?.price || 0) * item.quantity);
-  }, 0);
-  const shipping = cart.length > 0 ? 20 : 0;
-  const total = subtotal + shipping;
+  const dispatch = useDispatch();
+  const { subtotal, shipping, total } = useSelector(selectCartDetails);
 
   const handlePaymentVerification = async (response) => {
     try {
@@ -47,22 +43,13 @@ const Confirmation = () => {
       throw error;
     }
   };
-  console.log("address", address);
-
-  console.log("Subtotal:", subtotal, "Total:", total);
 
   const handleCheckout = async () => {
     try {
-      // Step 1: Submit the address
-      const addressResponse = await addAddress(address);
-      if (!addressResponse?.data?.success) {
-        throw new Error("Failed to save address. Please try again.");
-      }
-  
       const orderDetails = {
         userId: address.userId,
         cartItems: cart,
-        address: addressResponse.data.address, // Use the saved address from response
+        address,
         paymentMethod,
         subtotal,
         shipping,
@@ -76,6 +63,7 @@ const Confirmation = () => {
         if (response?.data?.success) {
           const { order } = response.data;
           navigate(`/placed/${order._id}`);
+          dispatch(clearCart());
         } else {
           throw new Error(
             response?.data?.message || "Order placement failed."
@@ -122,7 +110,9 @@ const Confirmation = () => {
             const { data } = await placeOrder(orderDetails);
             if (data.success) {
               navigate(`/placed/${data.order._id}`);
+              dispatch(clearCart());
             }
+
           } catch (error) {
             console.error("Payment verification failed:", error);
             toast.error("Payment verification failed.");
@@ -137,8 +127,6 @@ const Confirmation = () => {
       toast.error("Checkout failed. Please try again.");
     }
   };
-  
-  console.log("cart", cart);
 
   return (
     <div className="hero w-full">

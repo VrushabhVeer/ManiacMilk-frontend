@@ -26,25 +26,25 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Add interceptors for centralized success and error handling
-axiosInstance.interceptors.response.use(
-  (response) => {
-    // Show success toast if the response contains a message
-    if (response?.data?.message) {
-      toast.success(response.data.message);
-    }
-    return response;
-  },
-  (error) => {
-    // Extract and show error message
-    const errorMessage =
-      error?.response?.data?.message ||
-      error.message ||
-      "Something went wrong.";
-    toast.error(errorMessage);
-    return Promise.reject(error);
-  }
-);
+// // Add interceptors for centralized success and error handling
+// axiosInstance.interceptors.response.use(
+//   (response) => {
+//     // Show success toast if the response contains a message
+//     if (response?.data?.message) {
+//       toast.success(response.data.message);
+//     }
+//     return response;
+//   },
+//   (error) => {
+//     // Extract and show error message
+//     const errorMessage =
+//       error?.response?.data?.message ||
+//       error.message ||
+//       "Something went wrong.";
+//     toast.error(errorMessage);
+//     return Promise.reject(error);
+//   }
+// );
 
 // User APIs
 export const login = (payload) =>
@@ -78,7 +78,7 @@ export const CALLBACK_URL = `${axiosInstance.defaults.baseURL}/payment/paymentve
 
 // Orders APIs
 export const placeOrder = (payload) =>
-  axiosInstance.post("/order/place", payload);
+  axiosInstance.post("/orders/place", payload);
 
 export const getAllOrders = () => axiosInstance.get("/orders/allorders");
 export const getOrderByOrderId = (orderId) => axiosInstance.get(`/orders/order/${orderId}`);

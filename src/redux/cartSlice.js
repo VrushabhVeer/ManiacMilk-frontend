@@ -82,11 +82,23 @@ const cartSlice = createSlice({
           );
         }
       }
-
       saveGuestCart(state.cart); // Save updated cart for guest users
     },
   },
 });
+
+// Selectors
+export const selectCartDetails = (state) => {
+  const cart = state.cart.cart;
+  const subtotal = cart.reduce((total, item) => {
+    return total + parseFloat((item.selectedSize?.price || 0) * item.quantity);
+  }, 0);
+  const shipping = cart.length > 0 ? 20 : 0;
+  const total = subtotal + shipping;
+  const totalItemsInCart = cart.reduce((total, item) => total + item.quantity, 0);
+
+  return { subtotal, shipping, total, totalItemsInCart };
+};
 
 export const {
   setCart,

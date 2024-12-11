@@ -1,27 +1,30 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import Loader from "../common/Loader";
 
 const PrivateRoute = ({ element: Component }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null); // Initially null for loading state
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token); // Set true if token exists, otherwise false
+    setIsAuthenticated(!!token);
   }, []);
 
   if (isAuthenticated === null) {
-    // Show a loading indicator while checking authentication
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
-    // Redirect to login with the current location saved
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return Component; // Render the private component
+  return Component;
 };
 
 export default PrivateRoute;

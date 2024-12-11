@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import Address from "../components/common/Address";
 import { getProfile } from "../utils/apis";
 import Orders from "../components/profile/Orders";
 import CompletedOrders from "../components/profile/CompletedOrders";

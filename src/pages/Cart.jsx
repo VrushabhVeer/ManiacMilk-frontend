@@ -7,6 +7,7 @@ import {
   deleteProduct,
   incrementQuantity,
   decrementQuantity,
+  selectCartDetails,
 } from "../redux/cartSlice";
 import Modal from "../components/common/Modal";
 import { useState } from "react";
@@ -17,18 +18,7 @@ const Cart = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalAction, setModalAction] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
-
-  const subtotal = cart.reduce((total, item) => {
-    return total + parseFloat((item.selectedSize?.price || 0) * item.quantity);
-  }, 0);
-
-  const shipping = cart.length > 0 ? 20 : 0;
-  const total = subtotal + shipping;
-
-  const totalItemsInCart = cart.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  const { subtotal, shipping, total, totalItemsInCart } = useSelector(selectCartDetails);
 
   const handleClearCart = () => {
     setModalAction("clear");
@@ -77,9 +67,11 @@ const Cart = () => {
       />
 
       <div className="w-11/12 md:w-10/12 mx-auto pt-10 pb-10 md:pb-20">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 text-center">
+        {cart.length === 0 ? (
+          <></>
+        ) : (<h1 className="text-2xl md:text-3xl font-bold text-gray-800">
           Your Cart
-        </h1>
+        </h1>)}
 
         {cart.length === 0 ? (
           <div className="flex flex-col items-center mt-12">

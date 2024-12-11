@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import rightUpArrow from "../assets/icons/rightUpArrow.png";
 import toast, { Toaster } from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAddress } from "../redux/addressSlice";
 import { Link, useNavigate } from "react-router-dom";
 import CartItems from "../components/common/CartItems";
@@ -19,6 +19,21 @@ const Checkout = () => {
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const savedAddress = useSelector((state) => state.address.address);
+
+  useEffect(() => {
+    if (savedAddress) {
+      setFullname(savedAddress.fullname || "");
+      setMobile(savedAddress.mobile || "");
+      setEmail(savedAddress.email || "");
+      setHouse(savedAddress.house || "");
+      setArea(savedAddress.area || "");
+      setCity(savedAddress.city || "");
+      setPincode(savedAddress.pincode || "");
+      setState(savedAddress.state || "");
+    }
+  }, [savedAddress]);
 
   const validateInputs = () => {
     const errors = {};

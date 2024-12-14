@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import closeImage from "../../assets/icons/close.png";
 
 const Modal = ({ isOpen, title, message, onConfirm, onCancel }) => {
     if (!isOpen) return null;
@@ -6,7 +7,16 @@ const Modal = ({ isOpen, title, message, onConfirm, onCancel }) => {
     return (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white rounded-lg w-11/12 max-w-md p-5">
-                <h2 className="text-lg font-bold mb-1">{title}</h2>
+                <div className="flex items-center justify-between mb-1">
+                    <h2 className="text-lg font-bold">{title}</h2>
+                    <img
+                        className="w-3 cursor-pointer"
+                        src={closeImage}
+                        alt="close-image"
+                        loading="lazy"
+                        onClick={onCancel}
+                    />
+                </div>
                 <p className="text-gray-600 mb-5">{message}</p>
                 <div className="flex justify-end gap-3">
                     <button
@@ -23,7 +33,7 @@ const Modal = ({ isOpen, title, message, onConfirm, onCancel }) => {
                     </button>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

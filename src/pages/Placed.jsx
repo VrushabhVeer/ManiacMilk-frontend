@@ -98,7 +98,7 @@ const Placed = () => {
                       <img
                         src={check}
                         alt="Check"
-                        className="w-4"
+                        className="w-5"
                         loading="lazy"
                       />
                     ) : (
@@ -128,7 +128,7 @@ const Placed = () => {
             {/* Address Details */}
             <div className="text-gray-600 mt-4">
               <p className="text-[#1a1d20] font-semibold">Address Details</p>
-              <p className="mt-1">{address?.fullname},</p>
+              <p className="mt-1">{address?.firstname} {address?.lastname},</p>
               <p>
                 {address?.house}, {address?.area},
               </p>

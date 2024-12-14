@@ -5,7 +5,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import rightArrow from "../../assets/icons/rightArrow.png";
 
-const VerifyOTP = ({ redirectPath,  email }) => {
+const VerifyOTP = ({ redirectPath, email }) => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -41,12 +41,18 @@ const VerifyOTP = ({ redirectPath,  email }) => {
     const fullOtp = otp.join("");
     try {
       const response = await otpVerification({ email, otp: fullOtp });
+      const { token, user } = response.data;
+      const userId = user._id; // Extract the userId
+      const userEmail = user.email; // Extract the userId
+
+      // Save token and userId to localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", userId);
+      localStorage.setItem("userEmail", userEmail);
+
+      // Notify success and navigate
       toast.success(response.data.message);
-      console.log("token", response.data.token);
-
-      // Save token to localStorage
-      localStorage.setItem("token", response.data.token);
-
+      console.log("Token:", token, "UserId:", userId);
       navigate(redirectPath, { replace: true });
     } catch (error) {
       toast.error(error.response?.data?.message || "Error verifying OTP.");
@@ -100,8 +106,9 @@ const VerifyOTP = ({ redirectPath,  email }) => {
                 onChange={(e) => handleInputChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 onPaste={handlePaste}
-                className={`w-12 md:w-16 h-12 md:h-16 text-center text-lg bg-inherit rounded-md border ${errors.otp ? "border-red-500" : "border-gray-400"
-                  } outline-none`}
+                className={`w-12 md:w-16 h-12 md:h-16 text-center text-lg bg-inherit rounded-md border ${
+                  errors.otp ? "border-red-500" : "border-gray-400"
+                } outline-none`}
                 maxLength="1"
               />
             ))}

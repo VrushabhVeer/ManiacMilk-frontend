@@ -137,7 +137,7 @@ const Confirmation = () => {
 
         <div className="w-full flex flex-col justify-between md:flex-row mt-10 gap-10 md:gap-20">
           <div className="w-full">
-            <Address />
+            <Address isConfirmation={true} />
 
             <div className="mt-10">
               <h2 className="text-xl font-semibold">Payment</h2>

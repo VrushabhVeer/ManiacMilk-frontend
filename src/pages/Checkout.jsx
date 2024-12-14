@@ -8,7 +8,8 @@ import CartItems from "../components/common/CartItems";
 import { createUser } from "../utils/apis";
 
 const Checkout = () => {
-  const [fullname, setFullname] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [house, setHouse] = useState("");
@@ -19,12 +20,14 @@ const Checkout = () => {
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const isLoggedIn = localStorage.getItem("token");
+  const emailAddress = localStorage.getItem("userEmail");
   const savedAddress = useSelector((state) => state.address.address);
 
   useEffect(() => {
     if (savedAddress) {
-      setFullname(savedAddress.fullname || "");
+      setFirstname(savedAddress.firstname || "");
+      setLastname(savedAddress.lastname || "");
       setMobile(savedAddress.mobile || "");
       setEmail(savedAddress.email || "");
       setHouse(savedAddress.house || "");
@@ -38,9 +41,13 @@ const Checkout = () => {
   const validateInputs = () => {
     const errors = {};
 
-    // Fullname validation
-    if (!fullname.trim()) {
-      errors.fullname = "Fullname is required.";
+    // Name validation
+    if (!firstname.trim()) {
+      errors.firstname = "Firstname is required.";
+    }
+
+    if (!lastname.trim()) {
+      errors.lastname = "Lastname is required.";
     }
 
     // Mobile validation
@@ -96,7 +103,8 @@ const Checkout = () => {
     }
 
     const addressData = {
-      fullname,
+      firstname,
+      lastname,
       mobile,
       email,
       house,
@@ -107,7 +115,8 @@ const Checkout = () => {
     };
 
     const userData = {
-      fullname,
+      firstname,
+      lastname,
       mobile,
       email,
     };
@@ -138,53 +147,93 @@ const Checkout = () => {
         </p>
 
         <div className="flex justify-between flex-col md:flex-row gap-10 md:gap-20 mt-10">
-          <form onSubmit={handleSubmit} className="w-full">
-            <div>
-              <div className="flex justify-between ">
-                <h2 className="text-lg font-semibold">Contact Details</h2>
-                <p className="text-sm underline font-medium mt-2">
-                  <Link className="text-blue-500" to="/login">
-                    Login
-                  </Link>
-                </p>
+          <div className="w-full">
+            {/* <form onSubmit={handleSubmit}> */}
+            {isLoggedIn ? (
+              <div>
+                <p>Account</p>
+                <div
+                  className="
+              flex items-center justify-between"
+                >
+                  <p className="text-gray-600">{emailAddress}</p>
+                  <p className="text-orange-500 underline text-sm">Logout</p>
+                </div>
               </div>
-              <div className="mt-4">
-                <input
-                  placeholder="Email Address"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.email ? "border-red-500" : "border-gray-400"
+            ) : (
+              <div>
+                <div className="flex justify-between ">
+                  <h2 className="text-lg font-semibold">Contact Details</h2>
+                  <p className="text-sm underline font-medium mt-2">
+                    <Link className="text-blue-500" to="/login">
+                      Login
+                    </Link>
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <input
+                    placeholder="Email Address"
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
+                      errors.email ? "border-red-500" : "border-gray-400"
                     }`}
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                )}
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="mt-8">
               <h2 className="text-lg font-semibold mb-4">Shipping Address</h2>
 
-              <div className="mt-4">
-                <input
-                  placeholder="Fullname"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.fullname ? "border-red-500" : "border-gray-400"
+              <div className="mt-4 flex flex-col md:flex-row items-center gap-4">
+                <div className="w-full">
+                  <input
+                    placeholder="Firstname"
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
+                      errors.firstname ? "border-red-500" : "border-gray-400"
                     }`}
-                  type="text"
-                  value={fullname}
-                  onChange={(e) => setFullname(e.target.value)}
-                />
-                {errors.fullname && (
-                  <p className="text-red-500 text-sm mt-1">{errors.fullname}</p>
-                )}
+                    type="text"
+                    name="firstname"
+                    value={firstname}
+                    onChange={(e) => setFirstname(e.target.value)}
+                  />
+                  {errors.firstname && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.firstname}
+                    </p>
+                  )}
+                </div>
+
+                <div className="w-full">
+                  <input
+                    placeholder="Lastname"
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
+                      errors.lastname ? "border-red-500" : "border-gray-400"
+                    }`}
+                    type="text"
+                    name="lastname"
+                    value={lastname}
+                    onChange={(e) => setLastname(e.target.value)}
+                  />
+                  {errors.lastname && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.lastname}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div className="mt-4">
                 <input
                   placeholder="Mobile No"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.mobile ? "border-red-500" : "border-gray-400"
-                    }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
+                    errors.mobile ? "border-red-500" : "border-gray-400"
+                  }`}
                   type="text"
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
@@ -197,8 +246,9 @@ const Checkout = () => {
               <div className="mt-4">
                 <input
                   placeholder="House/Flat No"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.house ? "border-red-500" : "border-gray-400"
-                    }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
+                    errors.house ? "border-red-500" : "border-gray-400"
+                  }`}
                   type="text"
                   value={house}
                   onChange={(e) => setHouse(e.target.value)}
@@ -211,8 +261,9 @@ const Checkout = () => {
               <div className="mt-4">
                 <input
                   placeholder="Area/Colony"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.area ? "border-red-500" : "border-gray-400"
-                    }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
+                    errors.area ? "border-red-500" : "border-gray-400"
+                  }`}
                   type="text"
                   value={area}
                   onChange={(e) => setArea(e.target.value)}
@@ -226,8 +277,9 @@ const Checkout = () => {
                 <div className="w-full">
                   <input
                     placeholder="City"
-                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.city ? "border-red-500" : "border-gray-400"
-                      }`}
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
+                      errors.city ? "border-red-500" : "border-gray-400"
+                    }`}
                     type="text"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
@@ -240,8 +292,9 @@ const Checkout = () => {
                 <div className="w-full">
                   <input
                     placeholder="Pin Code"
-                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.pincode ? "border-red-500" : "border-gray-400"
-                      }`}
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
+                      errors.pincode ? "border-red-500" : "border-gray-400"
+                    }`}
                     type="text"
                     value={pincode}
                     onChange={(e) => setPincode(e.target.value)}
@@ -257,8 +310,9 @@ const Checkout = () => {
               <div className="mt-4">
                 <input
                   placeholder="State"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.state ? "border-red-500" : "border-gray-400"
-                    }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
+                    errors.state ? "border-red-500" : "border-gray-400"
+                  }`}
                   type="text"
                   value={state}
                   onChange={(e) => setState(e.target.value)}
@@ -268,15 +322,28 @@ const Checkout = () => {
                 )}
               </div>
             </div>
+
+            <div className="flex items-center gap-2 mt-5">
+              <input
+                type="checkbox"
+                id="saveAddress"
+                name="saveAddress"
+                className="bg-inherit w-5 h-5"
+              />
+              <label htmlFor="">Save address for next time.</label>
+            </div>
+
             {/* Button */}
             <button
               className="w-full bg-green-900 text-white py-3 rounded-full tracking-wide font-medium mt-8 flex items-center justify-center gap-2"
               type="submit"
+              onClick={handleSubmit}
             >
               Continue To Payment
               <img className="w-5" src={rightUpArrow} alt="right-up-arrow" />
             </button>
-          </form>
+            {/* </form*/}
+          </div>
 
           <div className="w-full">
             <CartItems />

@@ -64,6 +64,17 @@ export const contactUs = (payload) => axiosInstance.post("/contact", payload);
 export const addAddress = (payload) =>
   axiosInstance.post("/address/create", payload);
 
+export const getAddress = (userId) =>
+  axiosInstance.get(`/address/${userId}`);
+
+export const deleteAddress = (id) => {
+  return axiosInstance.delete(`/address/${id}`); // Adjust the endpoint based on your backend.
+};
+
+export const updateAddress = (id, updatedData) => {
+  return axiosInstance.put(`/address/${id}`, updatedData); // Adjust the endpoint based on your backend.
+};
+
 // Payment APIs
 export const makePayment = (amount) =>
   axiosInstance.post("/payment/checkout", { amount });
@@ -99,3 +110,7 @@ export const removeFromCart = (itemId) =>
 /// create user API for guest users
 export const createUser = (payload) =>
   axiosInstance.post("/users/create", payload);
+
+export const editProfile = (payload) => {
+  axiosInstance.put("/users/edit_profile", payload);
+}

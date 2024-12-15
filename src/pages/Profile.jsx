@@ -58,7 +58,7 @@ const Profile = () => {
 
   const confirmDeleteAccount = async () => {
     try {
-      await deleteAccount(userId);
+      await deleteAccount();
       toast.success("Account deleted successfully!");
       localStorage.clear();
       navigate("/"); // Redirect to homepage or login

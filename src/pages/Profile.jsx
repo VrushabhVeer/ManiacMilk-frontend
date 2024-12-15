@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { editProfile, getProfile } from "../utils/apis";
+import { deleteAccount, editProfile, getProfile } from "../utils/apis";
 import Orders from "../components/profile/Orders";
 import CompletedOrders from "../components/profile/CompletedOrders";
 import editImage from "../assets/icons/pen.png";
@@ -8,6 +8,7 @@ import closeImage from "../assets/icons/close.png";
 import settingsIcon from "../assets/icons/setting.png";
 import toast from "react-hot-toast";
 import Address from "../components/common/Address";
+import Modal from "../components/common/Modal";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -19,6 +20,7 @@ const Profile = () => {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal
   const dropdownRef = useRef(null); // Create a reference for the dropdown
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
@@ -54,15 +56,22 @@ const Profile = () => {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  const handleDeleteAccount = async () => {
+  const confirmDeleteAccount = async () => {
     try {
-      // await deleteAccount();
+      await deleteAccount(userId);
       toast.success("Account deleted successfully!");
+      localStorage.clear();
       navigate("/"); // Redirect to homepage or login
     } catch (error) {
       console.error("Error deleting account:", error);
       toast.error("Failed to delete account.");
+    } finally {
+      setIsDeleteModalOpen(false);
     }
+  };
+
+  const handleDeleteAccountClick = () => {
+    setIsDeleteModalOpen(true);
   };
 
   const handleLogout = async () => {
@@ -104,8 +113,8 @@ const Profile = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  console.log("user", profile);
 
-  console.log("user", profile)
   const renderContent = () => {
     switch (activeTab) {
       case "profile":
@@ -139,7 +148,7 @@ const Profile = () => {
                     <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-md rounded-md">
                       <button
                         className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                        onClick={handleDeleteAccount}
+                        onClick={handleDeleteAccountClick}
                       >
                         Delete Account
                       </button>
@@ -180,25 +189,22 @@ const Profile = () => {
         <h2 className="text-2xl font-semibold">Profile</h2>
         <div className="flex items-center gap-3 mt-3">
           <p
-            className={`cursor-pointer ${
-              activeTab === "profile" ? "font-semibold" : ""
-            }`}
+            className={`cursor-pointer ${activeTab === "profile" ? "font-semibold" : ""
+              }`}
             onClick={() => setActiveTab("profile")}
           >
             My Profile
           </p>
           <p
-            className={`cursor-pointer ${
-              activeTab === "orders" ? "font-semibold" : ""
-            }`}
+            className={`cursor-pointer ${activeTab === "orders" ? "font-semibold" : ""
+              }`}
             onClick={() => setActiveTab("orders")}
           >
             Orders
           </p>
           <p
-            className={`cursor-pointer ${
-              activeTab === "completed" ? "font-semibold" : ""
-            }`}
+            className={`cursor-pointer ${activeTab === "completed" ? "font-semibold" : ""
+              }`}
             onClick={() => setActiveTab("completed")}
           >
             Completed Orders
@@ -277,6 +283,14 @@ const Profile = () => {
           </div>
         </div>
       )}
+
+      <Modal
+        isOpen={isDeleteModalOpen}
+        title="Confirm Account Deletion"
+        message="Are you sure you want to delete your account? This action cannot be undone."
+        onConfirm={confirmDeleteAccount}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
     </div>
   );
 };

@@ -10,7 +10,7 @@ const Modal = ({ isOpen, title, message, onConfirm, onCancel }) => {
                 <div className="flex items-center justify-between mb-1">
                     <h2 className="text-lg font-bold">{title}</h2>
                     <img
-                        className="w-3 cursor-pointer"
+                        className="w-5 cursor-pointer"
                         src={closeImage}
                         alt="close-image"
                         loading="lazy"

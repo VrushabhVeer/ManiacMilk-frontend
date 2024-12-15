@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAddress } from "../redux/addressSlice";
 import { Link, useNavigate } from "react-router-dom";
 import CartItems from "../components/common/CartItems";
-import { createUser } from "../utils/apis";
+import { addAddress, createUser } from "../utils/apis";
 
 const Checkout = () => {
   const [firstname, setFirstname] = useState("");
@@ -21,6 +21,7 @@ const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("token");
+  const loggedInUserId = localStorage.getItem("userId");
   const emailAddress = localStorage.getItem("userEmail");
   const savedAddress = useSelector((state) => state.address.address);
 
@@ -58,12 +59,13 @@ const Checkout = () => {
       errors.mobile = "Please enter a valid 10-digit mobile number.";
     }
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email.trim()) {
-      errors.email = "Email address is required.";
-    } else if (!emailRegex.test(email)) {
-      errors.email = "Please enter a valid email address.";
+    if (!isLoggedIn) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email.trim()) {
+        errors.email = "Email address is required.";
+      } else if (!emailRegex.test(email)) {
+        errors.email = "Please enter a valid email address.";
+      }
     }
 
     // Address validations
@@ -101,12 +103,17 @@ const Checkout = () => {
       toast.error("Please correct the errors before submitting.");
       return;
     }
+    
+    if (!isLoggedIn) {
+      navigate("/login", { state: { from: "/checkout" } });
+      return;
+    }
 
     const addressData = {
       firstname,
       lastname,
       mobile,
-      email,
+      email: isLoggedIn ? emailAddress : email,
       house,
       area,
       city,
@@ -121,16 +128,39 @@ const Checkout = () => {
       email,
     };
 
-    try {
-      // Call the API to create or fetch the user
-      const response = await createUser(userData);
+    const saveAddressCheckbox = document.getElementById("saveAddress").checked;
 
-      if (response.status === 200) {
-        const user = response.data;
-        dispatch(setAddress({ ...addressData, userId: user._id }));
-        navigate("/confirmation");
+    try {
+      let userId = loggedInUserId;
+
+      // Create a user only if not logged in
+      if (!isLoggedIn || !loggedInUserId) {
+        const userResponse = await createUser(userData);
+        if (userResponse.status === 200) {
+          userId = userResponse.data._id;
+        } else {
+          throw new Error("User creation failed.");
+        }
+      }
+
+      // Proceed with saving the address
+      if (saveAddressCheckbox || isLoggedIn) {
+        const addressResponse = await addAddress({
+          ...addressData,
+          userId,
+        });
+
+        if (addressResponse.status === 201) {
+          toast.success("Address saved successfully!");
+          dispatch(setAddress({ ...addressData, userId }));
+          navigate("/confirmation");
+        } else {
+          throw new Error("Failed to save the address.");
+        }
       } else {
-        throw new Error("Unexpected response status");
+        // If address saving is not requested, proceed to confirmation
+        dispatch(setAddress({ ...addressData, userId }));
+        navigate("/confirmation");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -152,10 +182,7 @@ const Checkout = () => {
             {isLoggedIn ? (
               <div>
                 <p>Account</p>
-                <div
-                  className="
-              flex items-center justify-between"
-                >
+                <div className="flex items-center justify-between">
                   <p className="text-gray-600">{emailAddress}</p>
                   <p className="text-orange-500 underline text-sm">Logout</p>
                 </div>

@@ -114,3 +114,7 @@ export const createUser = (payload) =>
 export const editProfile = (payload) => {
   axiosInstance.put("/users/edit_profile", payload);
 }
+
+export const deleteAccount = (payload) => {
+  axiosInstance.delete("/users/delete_account", payload);
+}

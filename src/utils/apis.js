@@ -91,7 +91,6 @@ export const CALLBACK_URL = `${axiosInstance.defaults.baseURL}/payment/paymentve
 export const placeOrder = (payload) =>
   axiosInstance.post("/orders/place", payload);
 
-export const getAllOrders = () => axiosInstance.get("/orders/allorders");
 export const getOrderByOrderId = (orderId) => axiosInstance.get(`/orders/order/${orderId}`);
 export const getOrderByUserId = (userId) => axiosInstance.get(`/orders/user/${userId}`);
 export const cancelOrderById = (orderId) => axiosInstance.put(`/orders/cancel/${orderId}`);
@@ -118,3 +117,7 @@ export const editProfile = (payload) => {
 export const deleteAccount = () => {
   axiosInstance.delete("/users/delete_account");
 }
+
+// admin api calls
+export const getAllOrders = () => axiosInstance.get("/orders/admin/allorders");
+export const getAllUsers = () => axiosInstance.get("/users/admin/allusers");

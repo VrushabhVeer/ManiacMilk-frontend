@@ -1,15 +1,19 @@
 /* eslint-disable react/prop-types */
 import { useState, useRef } from "react";
-import { otpVerification } from "../../utils/apis";
+import { useDispatch } from "react-redux";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import rightArrow from "../../assets/icons/rightArrow.png";
+import { verifyOtp } from "../../redux/authSlice";
 
 const VerifyOTP = ({ redirectPath, email }) => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const inputRefs = useRef([]);
+
+  console.log("Redirect Path: verify otp page", redirectPath);
 
   const validateInputs = () => {
     const errors = {};
@@ -39,24 +43,12 @@ const VerifyOTP = ({ redirectPath, email }) => {
     }
 
     const fullOtp = otp.join("");
-    try {
-      const response = await otpVerification({ email, otp: fullOtp });
-      const { token, user } = response.data;
-      const userId = user._id; // Extract the userId
-      const userEmail = user.email; // Extract the userId
+    const resultAction = await dispatch(verifyOtp({ email, otp: fullOtp }));
 
-      // Save token and userId to localStorage
-      localStorage.setItem("token", token);
-      localStorage.setItem("userId", userId);
-      localStorage.setItem("userEmail", userEmail);
-
-      // Notify success and navigate
-      toast.success(response.data.message);
-      console.log("Token:", token, "UserId:", userId);
+    if (verifyOtp.fulfilled.match(resultAction)) {
       navigate(redirectPath, { replace: true });
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Error verifying OTP.");
     }
+      
   };
 
   const handleInputChange = (e, index) => {

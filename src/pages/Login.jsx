@@ -6,7 +6,9 @@ import { useLocation } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState(null);
   const location = useLocation();
-  const redirectPath = location.state?.from?.pathname || "/";
+  const redirectPath = location.state?.from || "/";
+
+  console.log("Login location state: login page", location.state);
 
   return (
     <div>

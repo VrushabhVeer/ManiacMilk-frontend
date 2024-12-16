@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import rightUpArrow from "../assets/icons/rightUpArrow.png";
+import down from "../assets/icons/down.png";
 import toast, { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { setAddress } from "../redux/addressSlice";
 import { Link, useNavigate } from "react-router-dom";
 import CartItems from "../components/common/CartItems";
 import { addAddress, createUser } from "../utils/apis";
+import { logout } from "../redux/authSlice";
 
 const Checkout = () => {
   const [firstname, setFirstname] = useState("");
@@ -24,6 +26,25 @@ const Checkout = () => {
   const loggedInUserId = localStorage.getItem("userId");
   const emailAddress = localStorage.getItem("userEmail");
   const savedAddress = useSelector((state) => state.address.address);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsDropdownOpen(false); // Close dropdown when clicking outside
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
 
   useEffect(() => {
     if (savedAddress) {
@@ -103,11 +124,6 @@ const Checkout = () => {
       toast.error("Please correct the errors before submitting.");
       return;
     }
-    
-    if (!isLoggedIn) {
-      navigate("/login", { state: { from: "/checkout" } });
-      return;
-    }
 
     const addressData = {
       firstname,
@@ -168,6 +184,16 @@ const Checkout = () => {
     }
   };
 
+  const handleLogout = () => {
+    try {
+      dispatch(logout());
+      toast.success("Logged out successfully!");
+      navigate("/login")
+    } catch {
+      toast.error("Failed to log out.");
+    }
+  }
+
   return (
     <div className="hero w-full pb-20 pt-10">
       <div className="w-11/12 md:w-10/12 mx-auto">
@@ -184,15 +210,32 @@ const Checkout = () => {
                 <p>Account</p>
                 <div className="flex items-center justify-between">
                   <p className="text-gray-600">{emailAddress}</p>
-                  <p className="text-orange-500 underline text-sm">Logout</p>
+
+                  <div className="relative" ref={dropdownRef}>
+                    <button className="bg-orange-50 px-2 py-1 rounded-sm">
+                      <img className="w-5" src={down} alt="down-arrow" loading="lazy" onClick={handleDropdownToggle} />
+                    </button>
+
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-md rounded-md">
+
+                        <p
+                          className="block font-medium cursor-pointer text-orange-500 px-4 py-2 text-sm underline"
+                          onClick={handleLogout}
+                        >
+                          Logout
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ) : (
               <div>
-                <div className="flex justify-between ">
+                <div className="flex justify-between">
                   <h2 className="text-lg font-semibold">Contact Details</h2>
                   <p className="text-sm underline font-medium mt-2">
-                    <Link className="text-blue-500" to="/login">
+                    <Link className="text-blue-500" to="/login" state={{ from: "/checkout" }}>
                       Login
                     </Link>
                   </p>
@@ -200,9 +243,8 @@ const Checkout = () => {
                 <div className="mt-4">
                   <input
                     placeholder="Email Address"
-                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                      errors.email ? "border-red-500" : "border-gray-400"
-                    }`}
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.email ? "border-red-500" : "border-gray-400"
+                      }`}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -221,9 +263,8 @@ const Checkout = () => {
                 <div className="w-full">
                   <input
                     placeholder="Firstname"
-                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                      errors.firstname ? "border-red-500" : "border-gray-400"
-                    }`}
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.firstname ? "border-red-500" : "border-gray-400"
+                      }`}
                     type="text"
                     name="firstname"
                     value={firstname}
@@ -239,9 +280,8 @@ const Checkout = () => {
                 <div className="w-full">
                   <input
                     placeholder="Lastname"
-                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                      errors.lastname ? "border-red-500" : "border-gray-400"
-                    }`}
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.lastname ? "border-red-500" : "border-gray-400"
+                      }`}
                     type="text"
                     name="lastname"
                     value={lastname}
@@ -258,9 +298,8 @@ const Checkout = () => {
               <div className="mt-4">
                 <input
                   placeholder="Mobile No"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                    errors.mobile ? "border-red-500" : "border-gray-400"
-                  }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.mobile ? "border-red-500" : "border-gray-400"
+                    }`}
                   type="text"
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
@@ -273,9 +312,8 @@ const Checkout = () => {
               <div className="mt-4">
                 <input
                   placeholder="House/Flat No"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                    errors.house ? "border-red-500" : "border-gray-400"
-                  }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.house ? "border-red-500" : "border-gray-400"
+                    }`}
                   type="text"
                   value={house}
                   onChange={(e) => setHouse(e.target.value)}
@@ -288,9 +326,8 @@ const Checkout = () => {
               <div className="mt-4">
                 <input
                   placeholder="Area/Colony"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                    errors.area ? "border-red-500" : "border-gray-400"
-                  }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.area ? "border-red-500" : "border-gray-400"
+                    }`}
                   type="text"
                   value={area}
                   onChange={(e) => setArea(e.target.value)}
@@ -304,9 +341,8 @@ const Checkout = () => {
                 <div className="w-full">
                   <input
                     placeholder="City"
-                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                      errors.city ? "border-red-500" : "border-gray-400"
-                    }`}
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.city ? "border-red-500" : "border-gray-400"
+                      }`}
                     type="text"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
@@ -319,9 +355,8 @@ const Checkout = () => {
                 <div className="w-full">
                   <input
                     placeholder="Pin Code"
-                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                      errors.pincode ? "border-red-500" : "border-gray-400"
-                    }`}
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.pincode ? "border-red-500" : "border-gray-400"
+                      }`}
                     type="text"
                     value={pincode}
                     onChange={(e) => setPincode(e.target.value)}
@@ -337,9 +372,8 @@ const Checkout = () => {
               <div className="mt-4">
                 <input
                   placeholder="State"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                    errors.state ? "border-red-500" : "border-gray-400"
-                  }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.state ? "border-red-500" : "border-gray-400"
+                    }`}
                   type="text"
                   value={state}
                   onChange={(e) => setState(e.target.value)}

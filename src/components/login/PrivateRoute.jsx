@@ -7,6 +7,8 @@ const PrivateRoute = ({ element: Component }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const location = useLocation();
 
+  console.log("PrivateRoute location state: private route", location.state);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsAuthenticated(!!token);
@@ -21,7 +23,7 @@ const PrivateRoute = ({ element: Component }) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return Component;

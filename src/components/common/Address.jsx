@@ -101,8 +101,7 @@ const Address = ({ isConfirmation }) => {
             dispatch(setAddress(response.data)); // Update Redux state
           }
         })
-        .catch((error) => {
-          console.error("Error fetching address:", error);
+        .catch(() => {
           toast.error("Failed to fetch address.");
         })
         .finally(() => setLoading(false));

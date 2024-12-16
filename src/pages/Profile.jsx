@@ -9,6 +9,8 @@ import settingsIcon from "../assets/icons/setting.png";
 import toast from "react-hot-toast";
 import Address from "../components/common/Address";
 import Modal from "../components/common/Modal";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/authSlice";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -23,7 +25,8 @@ const Profile = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal
   const dropdownRef = useRef(null); // Create a reference for the dropdown
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId");
+  const { userId } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const getProfileData = async () => {
@@ -76,11 +79,10 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      // await logout();
+      dispatch(logout());
       toast.success("Logged out successfully!");
-      navigate("/login");
-    } catch (error) {
-      console.error("Error logging out:", error);
+      navigate("/login")
+    } catch {
       toast.error("Failed to log out.");
     }
   };
@@ -112,8 +114,6 @@ const Profile = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
-  console.log("user", profile);
 
   const renderContent = () => {
     switch (activeTab) {

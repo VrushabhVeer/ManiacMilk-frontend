@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/icons/cow.png";
 import bag from "../../assets/icons/bag.png";
 import user from "../../assets/icons/user.png";
@@ -11,7 +11,8 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrollUp, setScrollUp] = useState(false);
   const { totalItemsInCart } = useSelector(selectCartDetails);
-  const token = localStorage.getItem("token");
+  const location = useLocation();
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -69,7 +70,7 @@ export default function Navbar() {
             )}
           </button>
 
-          <Link to="/">
+          <Link state={{ from: location.pathname }} to="/">
             <div className="flex items-center gap-2">
               <img className="w-6 md:w-8" src={logo} alt="logo" />
               <div>
@@ -85,26 +86,26 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden md:hidden lg:flex font-medium items-center space-x-8">
-            <Link to="/">
+            <Link state={{ from: location.pathname }} to="/">
               <p>Home</p>{" "}
             </Link>
-            <Link to="/products">
+            <Link state={{ from: location.pathname }} to="/products">
               <p>Products</p>{" "}
             </Link>
-            <Link to="/about">
+            <Link state={{ from: location.pathname }} to="/about">
               <p>About</p>{" "}
             </Link>
-            <Link to="/contact">
+            <Link state={{ from: location.pathname }} to="/contact">
               <p>Contact Us</p>{" "}
             </Link>
           </div>
 
           <div className="flex space-x-5">
             <Link to="/login">
-              <p className="font-medium">{token ? "Logout" : "Login"}</p>
+              <p className="font-medium">{isAuthenticated ? "Logout" : "Login"}</p>
             </Link>
 
-            <Link to="/cart" className="relative">
+            <Link state={{ from: location.pathname }} to="/cart" className="relative">
               <img className="w-6" src={bag} alt="bag" loading="lazy" />
               {totalItemsInCart > 0 && (
                 <span className="absolute top-[-4px] left-[13px] bg-green-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
@@ -113,7 +114,7 @@ export default function Navbar() {
               )}
             </Link>
 
-            <Link to="/profile">
+            <Link state={{ from: location.pathname }} to="/profile">
               <img className="w-6" src={user} alt="user" loading="lazy" />
             </Link>
 
@@ -123,13 +124,13 @@ export default function Navbar() {
         {isOpen ? (
           <div className="pb-8 pt-4 pl-4 lg:hidden">
             <div className="flex flex-col space-y-5 ml-2 font-medium">
-              <Link to="/">
+              <Link state={{ from: location.pathname }} to="/">
                 <p>Home</p>{" "}
               </Link>
-              <Link to="/products">
+              <Link state={{ from: location.pathname }} to="/products">
                 <p>Products</p>{" "}
               </Link>
-              <Link to="/contact">
+              <Link state={{ from: location.pathname }} to="/contact">
                 <p>Contact Us</p>{" "}
               </Link>
               <Link to="/login">

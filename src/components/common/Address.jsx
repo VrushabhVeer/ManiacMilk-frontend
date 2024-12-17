@@ -108,7 +108,7 @@ const Address = ({ isConfirmation }) => {
     } else {
       setLoading(false); // For guests, no API call is needed
     }
-  }, [isLoggedIn, userId, dispatch]);
+  }, [isLoggedIn, userId, dispatch, address]);
 
   // Handle edit button click
   const onEdit = () => {

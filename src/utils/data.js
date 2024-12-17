@@ -2,6 +2,7 @@ import instagram from "../assets/icons/instagram.png";
 import facebook from "../assets/icons/facebook.png";
 import whatsapp from "../assets/icons/whatsapp.png";
 import rightUpArrow from "../assets/icons/rightUpArrow.png";
+import user from "../assets/icons/userImage.png";
 import call from "../assets/icons/call.png";
 import email from "../assets/icons/email.png";
 import location from "../assets/icons/location.png";
@@ -94,3 +95,54 @@ export const icons = {
   rightUpArrow,
   location,
 };
+
+export const TESTIMONIALS = [
+  {
+    id: 1,
+    rating: "★ ★ ★ ★",
+    avatar: user,
+    userName: "Suhas Joshi",
+    description:
+      "The milk is so fresh and creamy! It reminds me of the purity of farm-fresh milk we used to get in my village.",
+  },
+  {
+    id: 2,
+    rating: "★ ★ ★ ★ ★",
+    avatar: user,
+    userName: "Snehal Patil",
+    description:
+      "Loved the quality of the milk and paneer. It’s perfect for making authentic dishes.",
+  },
+  {
+    id: 3,
+    rating: "★ ★ ★ ★ ★",
+    avatar: user,
+    userName: "Ashwini Kulkarni",
+    description:
+      "The ghee is so aromatic and pure. It adds such a wonderful flavor to my Modaks and traditional sweets!",
+  },
+  {
+    id: 4,
+    rating: "★ ★ ★ ★",
+    avatar: user,
+    userName: "Amol Deshmukh",
+    description:
+      "The service is excellent, and the milk is always fresh. My morning tea has never tasted better.",
+  },
+  {
+    id: 5,
+    rating: "★ ★ ★ ★ ★",
+    avatar: user,
+    userName: "Swapnil Gokhale",
+    description:
+      "I’m very impressed with the quality of their organic milk. It’s healthy and perfect for my kids!",
+  },
+  {
+    id: 6,
+    rating: "★ ★ ★ ★",
+    avatar: user,
+    userName: "Shweta Bhosale",
+    description:
+      "Their dahi (curd) is thick and delicious. It’s perfect for making shrikhand and other desserts!",
+  },
+];

@@ -13,6 +13,7 @@ export default function Navbar() {
   const { totalItemsInCart } = useSelector(selectCartDetails);
   const location = useLocation();
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { data: profile } = useSelector((state) => state.profile);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -32,7 +33,7 @@ export default function Navbar() {
   return (
     <>
       <div
-        className={`bg-white sticky top-0 z-50 border ${scrollUp ? "shadow-md" : ""
+        className={`w-full bg-white sticky top-0 z-50 border ${scrollUp ? "shadow-md" : ""
           }`}
       >
         <div className="w-11/12 mx-auto flex flex-row md:flex-row lg:flex-row py-4 items-center justify-between">
@@ -103,6 +104,7 @@ export default function Navbar() {
           <div className="flex space-x-5">
             <Link to="/login">
               <p className="font-medium">{isAuthenticated ? "Logout" : "Login"}</p>
+              <p className="text-[11px] mt-[-3px]">{profile?.firstname}</p>
             </Link>
 
             <Link state={{ from: location.pathname }} to="/cart" className="relative">

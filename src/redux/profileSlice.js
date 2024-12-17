@@ -1,7 +1,7 @@
+// redux/profileSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getProfile, editProfile } from "../utils/apis";
+import { getProfile, editProfile, deleteAccount } from "../utils/apis";
 
-// Thunk for fetching profile data
 export const fetchProfile = createAsyncThunk(
   "profile/fetchProfile",
   async (_, { rejectWithValue }) => {
@@ -14,7 +14,6 @@ export const fetchProfile = createAsyncThunk(
   }
 );
 
-// Thunk for updating profile data
 export const updateProfile = createAsyncThunk(
   "profile/updateProfile",
   async (formData, { rejectWithValue }) => {
@@ -30,19 +29,30 @@ export const updateProfile = createAsyncThunk(
   }
 );
 
-// Profile slice
+export const deleteUserAccount = createAsyncThunk(
+  "profile/deleteAccount",
+  async (_, { rejectWithValue }) => {
+    try {
+      await deleteAccount();
+      return true;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to delete account"
+      );
+    }
+  }
+);
+
 const profileSlice = createSlice({
   name: "profile",
   initialState: {
-    profile: null,
-    status: "idle", // idle, loading, succeeded, failed
+    data: null,
+    status: "idle",
     error: null,
   },
   reducers: {
-    clearProfile: (state) => {
-      state.profile = null;
-      state.status = "idle";
-      state.error = null;
+    resetProfile: (state) => {
+      state.data = null;
     },
   },
   extraReducers: (builder) => {
@@ -52,26 +62,20 @@ const profileSlice = createSlice({
       })
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.profile = action.payload;
+        state.data = action.payload;
       })
       .addCase(fetchProfile.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
-      .addCase(updateProfile.pending, (state) => {
-        state.status = "loading";
-      })
       .addCase(updateProfile.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.profile = action.payload;
+        state.data = action.payload;
       })
-      .addCase(updateProfile.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
+      .addCase(deleteUserAccount.fulfilled, (state) => {
+        state.data = null;
       });
   },
 });
 
-export const { clearProfile } = profileSlice.actions;
-
+export const { resetProfile } = profileSlice.actions;
 export default profileSlice.reducer;

@@ -3,3 +3,74 @@
   padding: 0;
   font-family: "Manrope", sans-serif;
 }
+
+.scroller {
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent,
+    white 20%,
+    white 80%,
+    transparent
+  );
+  mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+}
+
+.scroller__inner {
+  padding-block: 1rem;
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%; /* Ensures it fits the container */
+  animation: scroll var(--_animation-duration, 40s)
+    var(--_animation-direction, forwards) linear infinite;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.scroller__inner > * {
+  flex-shrink: 0;
+  width: calc(100% / 5); /* Default: Show 5 items */
+}
+
+.scroller[data-direction="right"] {
+  --_animation-direction: reverse;
+}
+
+.scroller[data-direction="left"] {
+  --_animation-direction: forwards;
+}
+
+.scroller[data-speed="fast"] {
+  --_animation-duration: 20s;
+}
+
+.scroller[data-speed="slow"] {
+  --_animation-duration: 60s;
+}
+
+@keyframes scroll {
+  to {
+    transform: translateX(calc(-100%));
+  }
+}
+
+/* Responsive Styling */
+@media (max-width: 1024px) {
+  .scroller__inner > * {
+    width: calc(100% / 3); /* Show 3 items on medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .scroller__inner > * {
+    width: calc(100% / 2); /* Show 2 items on small screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .scroller__inner > * {
+    width: 100%; /* Show 1 item on extra-small screens */
+  }
+}

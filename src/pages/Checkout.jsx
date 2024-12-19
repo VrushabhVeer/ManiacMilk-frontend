@@ -212,13 +212,12 @@ const Checkout = () => {
                   <p className="text-gray-600">{emailAddress}</p>
 
                   <div className="relative" ref={dropdownRef}>
-                    <button className="bg-orange-50 px-2 py-1 rounded-sm">
+                    <button className="bg-orange-50 px-2 py-1 rounded-md">
                       <img className="w-5" src={down} alt="down-arrow" loading="lazy" onClick={handleDropdownToggle} />
                     </button>
 
                     {isDropdownOpen && (
                       <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-md rounded-md">
-
                         <p
                           className="block font-medium cursor-pointer text-orange-500 px-4 py-2 text-sm underline"
                           onClick={handleLogout}

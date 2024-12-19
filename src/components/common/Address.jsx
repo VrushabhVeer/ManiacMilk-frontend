@@ -21,16 +21,16 @@ const Address = ({ isConfirmation }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const isLoggedIn = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { userId } = useSelector((state) => state.auth);
   const localStorageKey = "guestAddress";
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete confirmation modal
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isAuthenticated) {
       localStorage.removeItem(localStorageKey);
     }
-  }, [isLoggedIn]);
+  }, [isAuthenticated]);
 
   // Local state for the form inputs
   const [formData, setFormData] = useState({
@@ -94,7 +94,7 @@ const Address = ({ isConfirmation }) => {
 
   // Fetch address for logged-in user
   useEffect(() => {
-    if (isLoggedIn && userId) {
+    if (isAuthenticated && userId) {
       getAddress(userId)
         .then((response) => {
           if (response.data) {
@@ -108,7 +108,7 @@ const Address = ({ isConfirmation }) => {
     } else {
       setLoading(false); // For guests, no API call is needed
     }
-  }, [isLoggedIn, userId, dispatch, address]);
+  }, [isAuthenticated, userId, dispatch, address]);
 
   // Handle edit button click
   const onEdit = () => {
@@ -119,7 +119,7 @@ const Address = ({ isConfirmation }) => {
   // Handle delete button click
   const handleDelete = (id) => {
     const addressId = id;
-    if (isLoggedIn && addressId) {
+    if (isAuthenticated && addressId) {
       deleteAddress(addressId)
         .then(() => {
           // dispatch(setAddress({})); // Clear Redux state
@@ -156,11 +156,11 @@ const Address = ({ isConfirmation }) => {
     }
 
     const addressPayload = { ...formData }; // Address data from the form
-    if (isLoggedIn) {
+    if (isAuthenticated) {
       addressPayload.userId = userId; // Add userId for logged-in users
     }
 
-    if (isLoggedIn) {
+    if (isAuthenticated) {
       // Check if address exists (if it has an _id), then update or add accordingly
       if (formData._id) {
         // If address exists, update it
@@ -204,14 +204,14 @@ const Address = ({ isConfirmation }) => {
       <div className="flex items-center gap-20 md:gap-40 mb-2 w-full">
         <h4 className="font-semibold">Address</h4>
         <div>
-          {isLoggedIn && address.firstname ? (
+          {isAuthenticated && address.firstname ? (
             <img
               className="w-4 cursor-pointer"
               src={editImage}
               alt="edit-image"
               onClick={onEdit}
             />
-          ) : isLoggedIn ? (
+          ) : isAuthenticated ? (
             <button
               className="px-4 py-1 bg-inherit hover:bg-orange-50 text-orange-500 border border-orange-500 rounded-md"
               onClick={() => setIsModalOpen(true)}

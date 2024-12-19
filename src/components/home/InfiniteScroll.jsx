@@ -26,14 +26,19 @@ const InfiniteScroll = () => {
 
   return (
     <div className="scroller" data-speed="medium">
-      <div className="scroller__inner flex gap-4">
+      <div className="scroller__inner flex gap-6">
         {TESTIMONIALS.map((item) => (
           <div
             key={item.id}
-            className="w-80 border rounded-md p-5 bg-white flex flex-col justify-between"
+            className="w-80 border rounded-md p-5 flex flex-col justify-between"
           >
-            <h2 className="text-yellow-500">{item.rating}</h2>
+            <img
+              className="w-5 mb-5"
+              src={item.comma}
+              alt="comma"
+            />
             <p className="text-gray-600 text-sm">{item.description}</p>
+            <h2 className="text-yellow-500 mt-3 text-lg">{item.rating}</h2>
             <div className="flex items-center gap-2 mt-2">
               <img
                 className="w-8 h-8 object-cover rounded-full"

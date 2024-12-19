@@ -12,6 +12,7 @@ import hygiene from "../assets/icons/hygiene.png";
 import process from "../assets/icons/process.png";
 import antibiotics from "../assets/icons/antibiotics.png";
 import cattle from "../assets/icons/cattle.png";
+import comma from "../assets/icons/comma.png";
 
 export const baseURL = "http://localhost:8000/";
 
@@ -101,6 +102,7 @@ export const TESTIMONIALS = [
     id: 1,
     rating: "★ ★ ★ ★",
     avatar: user,
+    comma:comma,
     userName: "Suhas Joshi",
     description:
       "The milk is so fresh and creamy! It reminds me of the purity of farm-fresh milk we used to get in my village.",
@@ -109,6 +111,7 @@ export const TESTIMONIALS = [
     id: 2,
     rating: "★ ★ ★ ★ ★",
     avatar: user,
+    comma:comma,
     userName: "Snehal Patil",
     description:
       "Loved the quality of the milk and paneer. It’s perfect for making authentic dishes.",
@@ -117,6 +120,7 @@ export const TESTIMONIALS = [
     id: 3,
     rating: "★ ★ ★ ★ ★",
     avatar: user,
+    comma:comma,
     userName: "Ashwini Kulkarni",
     description:
       "The ghee is so aromatic and pure. It adds such a wonderful flavor to my Modaks and traditional sweets!",
@@ -125,6 +129,7 @@ export const TESTIMONIALS = [
     id: 4,
     rating: "★ ★ ★ ★",
     avatar: user,
+    comma:comma,
     userName: "Amol Deshmukh",
     description:
       "The service is excellent, and the milk is always fresh. My morning tea has never tasted better.",
@@ -133,6 +138,7 @@ export const TESTIMONIALS = [
     id: 5,
     rating: "★ ★ ★ ★ ★",
     avatar: user,
+    comma:comma,
     userName: "Swapnil Gokhale",
     description:
       "I’m very impressed with the quality of their organic milk. It’s healthy and perfect for my kids!",
@@ -141,8 +147,9 @@ export const TESTIMONIALS = [
     id: 6,
     rating: "★ ★ ★ ★",
     avatar: user,
+    comma:comma,
     userName: "Shweta Bhosale",
     description:
-      "Their dahi (curd) is thick and delicious. It’s perfect for making shrikhand and other desserts!",
+      "Their dahi is thick and delicious. It’s perfect for making shrikhand and other desserts!",
   },
 ];

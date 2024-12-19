@@ -29,7 +29,7 @@ const Products = () => {
   };
 
   return (
-    <div className="w-11/12 mx-auto mt-20 mb-10 md:mb-20">
+    <div className="w-11/12 mx-auto mt-20 md:mt-24 lg:mt-40 mb-10 md:mb-20">
       <h1 className="text-center text-xl md:text-3xl font-bold text-[#1a1d20]">
         Our Products
       </h1>
@@ -62,7 +62,7 @@ const Products = () => {
 
             <button
               onClick={() => handleCart(product)}
-              className="bg-green-900 text-white w-full py-3 tracking-wide font-medium rounded-sm text-sm mt-3"
+              className="bg-green-900 text-white w-full py-3 tracking-wide font-medium rounded-md text-sm mt-3"
             >
               Add to Cart
             </button>
@@ -71,7 +71,7 @@ const Products = () => {
       </div>
 
       <Link to="/products">
-        <h2 className="text-center font-semibold underline mt-5">
+        <h2 className="text-center font-semibold underline mt-10">
           Explore More
         </h2>
       </Link>

@@ -2,7 +2,7 @@ import { highlightsData } from "../../utils/data";
 
 const Highlights = () => {
   return (
-    <div className="w-11/12 mx-auto mt-20 mb-10 md:mb-20">
+    <div className="w-11/12 mx-auto mt-20 md:mt-24 lg:mt-40 mb-10 md:mb-20">
       <h1 className="text-center text-xl md:text-3xl font-bold text-[#1a1d20]">
         Our Highlights
       </h1>

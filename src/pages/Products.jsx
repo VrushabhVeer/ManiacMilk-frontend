@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { getAllProducts } from "../utils/apis";
+import { addToCartAPI, getAllProducts } from "../utils/apis";
 import { Link } from "react-router-dom";
 import { setCart } from "../redux/cartSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 import Loader from "../components/common/Loader";
 
@@ -11,6 +11,8 @@ const Products = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
+  const { isAuthenticated, userId } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   const categories = [
     "All",
@@ -21,8 +23,6 @@ const Products = () => {
     "Lassi",
     "Buttermilk",
   ];
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +35,6 @@ const Products = () => {
         console.log(error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -53,10 +52,35 @@ const Products = () => {
     setSelectedCategory(category);
   };
 
-  const handleCart = (product) => {
+  const handleCart = async (product) => {
     const defaultSize = product.sizes[product.sizes.length - 1];
-    dispatch(setCart({ ...product, quantity: 1, selectedSize: defaultSize }));
-    toast.success("Added to Cart");
+    const cartItem = {
+      productId: product._id,
+      name: product.name,
+      frontImage: product.frontImage,
+      selectedSize: defaultSize,
+      quantity: 1,
+    };
+
+    const payload = {
+      userId,
+      items: [cartItem],
+    };
+
+    console.log("cart item from products", payload);
+
+    if (isAuthenticated) {
+      try {
+        await addToCartAPI(payload);
+        dispatch(setCart(cartItem));
+        toast.success("Added to Cart");
+      } catch {
+        toast.error("Failed to add to cart");
+      }
+    } else {
+      dispatch(setCart(cartItem));
+      toast.success("Added to Cart");
+    }
   };
 
   return (

@@ -140,9 +140,9 @@ const Orders = ({ userId }) => {
                 <p className="font-semibold mt-4">Shipping Address:</p>
                 <p className="text-sm text-gray-600">
                   {order.address.firstname} {order.address.lastname},
-                  <br/>
+                  <br />
                   {order.address.house}, {order.address.area},
-                  <br/>
+                  <br />
                   {order.address.city}, {order.address.state} - {order.address.pincode}
                 </p>
                 <p className="font-semibold mt-2">
@@ -152,6 +152,9 @@ const Orders = ({ userId }) => {
                   Placed On:{" "}
                   {new Date(order.createdAt).toLocaleString([], {
                     weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
                     hour: "2-digit",
                     minute: "2-digit",
                     hour12: true,
@@ -162,24 +165,23 @@ const Orders = ({ userId }) => {
                   onClick={() =>
                     order.status === "Pending" && openCancelModal(order._id)
                   }
-                  className={`mt-4 px-4 py-2 text-white text-sm rounded ${
-                    order.status === "Cancelled"
+                  className={`mt-4 px-4 py-2 text-white text-sm rounded ${order.status === "Cancelled"
                       ? "bg-gray-500 cursor-not-allowed"
                       : order.status === "Pending"
-                      ? "bg-red-500 hover:bg-red-600"
-                      : order.status === "Completed"
-                      ? "bg-green-500 cursor-not-allowed"
-                      : ""
-                  }`}
+                        ? "bg-red-500 hover:bg-red-600"
+                        : order.status === "Completed"
+                          ? "bg-green-500 cursor-not-allowed"
+                          : ""
+                    }`}
                   disabled={order.status !== "Pending"} // Disable button for statuses other than Pending
                 >
                   {order.status === "Cancelled"
                     ? "Cancelled"
                     : order.status === "Pending"
-                    ? "Cancel Order"
-                    : order.status === "Completed"
-                    ? "Completed"
-                    : ""}
+                      ? "Cancel Order"
+                      : order.status === "Completed"
+                        ? "Completed"
+                        : ""}
                 </button>
               </div>
             )}

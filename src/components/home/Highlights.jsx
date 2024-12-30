@@ -6,6 +6,9 @@ const Highlights = () => {
       <h1 className="text-center text-xl md:text-3xl font-bold text-[#1a1d20]">
         Our Highlights
       </h1>
+      <p className="text-center text-gray-600 mt-1">
+        Learn about our standout highlights and offerings.
+      </p>
 
       <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10 mt-10">
         {highlightsData.map((item, index) => (

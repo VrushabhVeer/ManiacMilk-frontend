@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { singleProduct } from "../utils/apis"; // Replace with actual API call
-import { useDispatch } from "react-redux";
+import { addToCartAPI, singleProduct } from "../utils/apis";
+import { useDispatch, useSelector } from "react-redux";
 import { setCart } from "../redux/cartSlice";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -10,6 +10,7 @@ const ProductDetails = () => {
   const [product, setProduct] = useState({});
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const { isAuthenticated, userId } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -38,31 +39,67 @@ const ProductDetails = () => {
     setQuantity((prev) => Math.max(1, prev + change));
   };
 
-  const handleCart = () => {
+  const handleCart = async () => {
     if (!selectedSize || quantity < 1) {
       toast.error("Please select a valid size and quantity");
       return;
     }
-    const cartProduct = {
-      ...product,
+
+    const cartItem = {
+      productId: product._id,
+      name: product.name,
+      frontImage: product.frontImage,
       selectedSize,
       quantity,
     };
-    dispatch(setCart(cartProduct));
-    toast.success("Added to Cart");
+
+    const payload = {
+      userId,
+      items: [cartItem],
+    }
+
+    if (isAuthenticated) {
+      try {
+        await addToCartAPI(payload); 
+        dispatch(setCart(cartItem));
+        toast.success("Added to Cart");
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+        toast.error("Failed to add to cart");
+      }
+    } else {
+      dispatch(setCart(cartItem));
+      toast.success("Added to Cart");
+    }
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     if (!selectedSize || quantity < 1) {
       toast.error("Please select a valid size and quantity");
       return;
     }
-    const cartProduct = {
-      ...product,
+
+    const cartItem = {
+      productId: product._id,
+      name: product.name,
+      frontImage: product.frontImage,
       selectedSize,
       quantity,
     };
-    dispatch(setCart(cartProduct));
+
+    if (isAuthenticated) {
+      try {
+        await addToCartAPI({ userId, items: [cartItem] });
+        dispatch(setCart(cartItem));
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+        toast.error("Failed to add to cart");
+        return;
+      }
+    } else {
+      dispatch(setCart(cartItem));
+    }
+
     navigate("/checkout");
   };
 

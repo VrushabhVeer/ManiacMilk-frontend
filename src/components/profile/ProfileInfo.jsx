@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/authSlice";
+import { clearCart } from "../../redux/cartSlice";
 
 const ProfileInfo = ({ onEdit, onDelete, userId }) => {
   const profile = useSelector((state) => state.profile.data);
@@ -52,6 +53,7 @@ const ProfileInfo = ({ onEdit, onDelete, userId }) => {
   const handleLogout = async () => {
     try {
       dispatch(logout());
+      dispatch(clearCart());
       toast.success("Logged out successfully!");
       navigate("/login");
     } catch {

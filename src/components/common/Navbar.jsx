@@ -11,9 +11,9 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrollUp, setScrollUp] = useState(false);
   const { totalItemsInCart } = useSelector(selectCartDetails);
-  const location = useLocation();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const { data: profile } = useSelector((state) => state.profile);
+  const location = useLocation();
 
   const handleToggle = () => {
     setIsOpen(!isOpen);

@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getCartAPI } from "../utils/apis";
 
 const localStorageKey = "guestCart";
 
@@ -8,8 +9,21 @@ const loadGuestCart = () => {
   return savedCart ? JSON.parse(savedCart) : [];
 };
 
+// Async thunk to fetch cart data for logged-in users
+export const fetchLoggedInCart = createAsyncThunk(
+  "cart/fetchLoggedInCart",
+  async (userId) => {
+    const response = await getCartAPI(userId);
+    return response.data.items || [];
+  }
+);
+
 const initialState = {
   cart: loadGuestCart(),
+  isAuthenticated: false,
+  userId: null,
+  isLoading: false,
+  error: null,
 };
 
 // Helper function to persist cart for guest users
@@ -42,7 +56,11 @@ const cartSlice = createSlice({
       }
 
       // Save cart to localStorage for guest users
-      saveGuestCart(state.cart);
+      // saveGuestCart(state.cart);
+
+      if (!state.isAuthenticated) {
+        saveGuestCart(state.cart); // Save guest cart to localStorage
+      }
     },
 
     deleteProduct: (state, action) => {
@@ -53,12 +71,19 @@ const cartSlice = createSlice({
       );
 
       // Save cart to localStorage for guest users
-      saveGuestCart(state.cart);
+      // saveGuestCart(state.cart);
+      if (!state.isAuthenticated) {
+        saveGuestCart(state.cart); // Save guest cart to localStorage
+      }
     },
 
     clearCart: (state) => {
       state.cart = [];
-      saveGuestCart(state.cart); // Clear localStorage for guest users
+      // saveGuestCart(state.cart); // Clear localStorage for guest users
+
+      if (!state.isAuthenticated) {
+        saveGuestCart(state.cart); // Save guest cart to localStorage
+      }
     },
 
     incrementQuantity: (state, action) => {
@@ -66,7 +91,10 @@ const cartSlice = createSlice({
       const product = findProduct(state.cart, productId, size);
       if (product) product.quantity += 1;
 
-      saveGuestCart(state.cart); // Save updated cart for guest users
+      // saveGuestCart(state.cart); // Save updated cart for guest users
+      if (!state.isAuthenticated) {
+        saveGuestCart(state.cart); // Save guest cart to localStorage
+      }
     },
 
     decrementQuantity: (state, action) => {
@@ -82,8 +110,33 @@ const cartSlice = createSlice({
           );
         }
       }
-      saveGuestCart(state.cart); // Save updated cart for guest users
+      // saveGuestCart(state.cart); // Save updated cart for guest users
+      if (!state.isAuthenticated) {
+        saveGuestCart(state.cart); // Save guest cart to localStorage
+      }
     },
+
+    // Set authentication and user data to switch cart view between guest and logged-in
+    setAuth: (state, action) => {
+      state.isAuthenticated = action.payload.isAuthenticated;
+      state.userId = action.payload.userId;
+    },
+  },
+
+  // Fetch logged-in cart items when user logs in
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchLoggedInCart.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchLoggedInCart.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.cart = action.payload;
+      })
+      .addCase(fetchLoggedInCart.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
   },
 });
 
@@ -106,6 +159,7 @@ export const {
   clearCart,
   incrementQuantity,
   decrementQuantity,
+  setAuth,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

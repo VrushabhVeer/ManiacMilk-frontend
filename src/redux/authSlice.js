@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { login, otpVerification } from "../utils/apis";
 import { toast } from "react-hot-toast";
+import { fetchLoggedInCart } from "./cartSlice";
 
 // Thunks
 export const sendOtp = createAsyncThunk(
@@ -21,7 +22,7 @@ export const sendOtp = createAsyncThunk(
 
 export const verifyOtp = createAsyncThunk(
   "auth/verifyOtp",
-  async ({ email, otp }, { rejectWithValue }) => {
+  async ({ email, otp }, { dispatch, rejectWithValue }) => {
     try {
       const response = await otpVerification({ email, otp });
       const { token, user } = response.data;
@@ -32,6 +33,8 @@ export const verifyOtp = createAsyncThunk(
       localStorage.setItem("userEmail", user.email);
 
       toast.success(response.data.message);
+
+      dispatch(fetchLoggedInCart(user._id));
       return { token, user };
     } catch (error) {
       const errorMessage =
@@ -77,6 +80,9 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchLoggedInCart.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(sendOtp.fulfilled, (state, action) => {
         state.email = action.payload.email;
       })

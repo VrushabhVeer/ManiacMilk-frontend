@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import rightArrow from "../../assets/icons/rightArrow.png";
 import { selectCartDetails } from "../../redux/cartSlice";
 
-
 const CartItems = () => {
   const { cart } = useSelector((state) => state.cart);
   const { subtotal, shipping, total, totalItemsInCart } = useSelector(selectCartDetails);
@@ -33,11 +32,11 @@ const CartItems = () => {
         </div>
       ) : (
         <>
-          <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
-          {cart.map((item) => (
+          <h2 className="text-lg font-semibold">Order Summary</h2>
+          {cart.map((item, index) => (
             <div
-              key={item._id}
-              className="flex items-center gap-5 border-b border-gray-200 pb-4"
+              key={index}
+              className="flex items-center gap-5 border-b border-gray-200 pb-4 pt-4"
             >
               <div className="relative">
                 <img

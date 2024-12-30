@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import CartItems from "../components/common/CartItems";
 import { addAddress, createUser } from "../utils/apis";
 import { logout } from "../redux/authSlice";
+import { clearCart } from "../redux/cartSlice";
 
 const Checkout = () => {
   const [firstname, setFirstname] = useState("");
@@ -187,6 +188,7 @@ const Checkout = () => {
   const handleLogout = () => {
     try {
       dispatch(logout());
+      dispatch(clearCart());
       toast.success("Logged out successfully!");
       navigate("/login")
     } catch {

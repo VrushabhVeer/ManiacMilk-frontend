@@ -26,25 +26,25 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// // Add interceptors for centralized success and error handling
-// axiosInstance.interceptors.response.use(
-//   (response) => {
-//     // Show success toast if the response contains a message
-//     if (response?.data?.message) {
-//       toast.success(response.data.message);
-//     }
-//     return response;
-//   },
-//   (error) => {
-//     // Extract and show error message
-//     const errorMessage =
-//       error?.response?.data?.message ||
-//       error.message ||
-//       "Something went wrong.";
-//     toast.error(errorMessage);
-//     return Promise.reject(error);
-//   }
-// );
+// Add interceptors for centralized success and error handling
+axiosInstance.interceptors.response.use(
+  (response) => {
+    // Show success toast if the response contains a message
+    if (response?.data?.message) {
+      toast.success(response.data.message);
+    }
+    return response;
+  },
+  (error) => {
+    // Extract and show error message
+    const errorMessage =
+      error?.response?.data?.message ||
+      error.message ||
+      "Something went wrong.";
+    toast.error(errorMessage);
+    return Promise.reject(error);
+  }
+);
 
 // User APIs
 export const login = (payload) =>
@@ -64,8 +64,7 @@ export const contactUs = (payload) => axiosInstance.post("/contact", payload);
 export const addAddress = (payload) =>
   axiosInstance.post("/address/create", payload);
 
-export const getAddress = (userId) =>
-  axiosInstance.get(`/address/${userId}`);
+export const getAddress = (userId) => axiosInstance.get(`/address/${userId}`);
 
 export const deleteAddress = (id) => {
   return axiosInstance.delete(`/address/${id}`); // Adjust the endpoint based on your backend.
@@ -91,32 +90,40 @@ export const CALLBACK_URL = `${axiosInstance.defaults.baseURL}/payment/paymentve
 export const placeOrder = (payload) =>
   axiosInstance.post("/orders/place", payload);
 
-export const getOrderByOrderId = (orderId) => axiosInstance.get(`/orders/order/${orderId}`);
-export const getOrderByUserId = (userId) => axiosInstance.get(`/orders/user/${userId}`);
-export const cancelOrderById = (orderId) => axiosInstance.put(`/orders/cancel/${orderId}`);
+export const getOrderByOrderId = (orderId) =>
+  axiosInstance.get(`/orders/order/${orderId}`);
+export const getOrderByUserId = (userId) =>
+  axiosInstance.get(`/orders/user/${userId}`);
+export const cancelOrderById = (orderId) =>
+  axiosInstance.put(`/orders/cancel/${orderId}`);
 
 // Cart APIs
-export const addToCart = (payload) => axiosInstance.post("/cart/add", payload);
+export const addToCartAPI = (payload) => axiosInstance.post("/cart/add", payload);
 
-export const getCart = () => axiosInstance.get("/cart");
+export const getCartAPI = (userId) => axiosInstance.get(`/cart/${userId}`);
 
-export const updateCartItem = (itemId, payload) =>
-  axiosInstance.put(`/cart/update/${itemId}`, payload);
+export const updateCartAPI = (itemId, payload) =>
+  axiosInstance.put(`/cart/edit/${itemId}`, payload);
 
-export const removeFromCart = (itemId) =>
-  axiosInstance.delete(`/cart/remove/${itemId}`);
+export const removeCartItemAPI = (itemId) =>
+  axiosInstance.delete(`/cart/delete/${itemId}`);
 
-/// create user API for guest users
+export const clearCartAPI = () => axiosInstance.delete(`/clear`);
+
+export const mergeCartAPI = (payload) =>
+  axiosInstance.post("/cart/merge", payload);
+
+// user API
 export const createUser = (payload) =>
   axiosInstance.post("/users/create", payload);
 
 export const editProfile = (payload) => {
   axiosInstance.put("/users/edit_profile", payload);
-}
+};
 
 export const deleteAccount = () => {
   axiosInstance.delete("/users/delete_account");
-}
+};
 
 // admin api calls
 export const getAllOrders = () => axiosInstance.get("/orders/admin/allorders");

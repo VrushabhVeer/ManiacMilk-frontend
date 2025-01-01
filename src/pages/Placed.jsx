@@ -53,8 +53,7 @@ const Placed = () => {
     );
   }
 
-  const { address, paymentMethod, subtotal, shipping, total, cartItems } =
-    order;
+  const { address, paymentMethod, subtotal, shipping, total, cartItems } = order;
 
   return (
     <div className="hero w-full pb-20 pt-10">
@@ -143,9 +142,9 @@ const Placed = () => {
           {/* Right Section */}
           <div className="w-full">
             <div>
-              {cartItems?.map((item) => (
+              {cartItems?.map((item, index) => (
                 <div
-                  key={item._id}
+                  key={index}
                   className="flex items-center gap-5 border-b border-gray-200 pb-4"
                 >
                   <div className="relative">

@@ -116,8 +116,8 @@ const Orders = ({ userId }) => {
             {expandedOrderId === order._id && (
               <div className="mt-4">
                 <p className="font-semibold mb-2">Cart Items:</p>
-                {order.cartItems.map((item) => (
-                  <div key={item._id} className="flex items-center gap-4 mb-3">
+                {order.cartItems.map((item, index) => (
+                  <div key={index} className="flex items-center gap-4 mb-3">
                     <img
                       src={item.frontImage}
                       alt={item.name}

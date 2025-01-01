@@ -5,6 +5,7 @@ import CartItems from "../components/common/CartItems";
 import Address from "../components/common/Address";
 import {
   CALLBACK_URL,
+  clearCartAPI,
   getPayment,
   makePayment,
   paymentVerification,
@@ -21,7 +22,6 @@ const Confirmation = () => {
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState("razorpay");
   const { cart } = useSelector((state) => state.cart);
-  const { userId } = useSelector((state) => state.auth);
   const { address } = useSelector((state) => state.address);
   const dispatch = useDispatch();
   const { subtotal, shipping, total } = useSelector(selectCartDetails);
@@ -47,7 +47,7 @@ const Confirmation = () => {
   const handleCheckout = async () => {
     try {
       const orderDetails = {
-        userId,
+        userId: address.userId,
         cartItems: cart,
         address,
         paymentMethod,
@@ -55,14 +55,15 @@ const Confirmation = () => {
         shipping,
         total,
       };
-
+  
       // Step 2: Handle COD payment
       if (paymentMethod === "cod") {
         const response = await placeOrder(orderDetails);
-
+  
         if (response?.data?.success) {
           const { order } = response.data;
           navigate(`/placed/${order._id}`);
+          await clearCartAPI(orderDetails.userId);
           dispatch(clearCart());
         } else {
           throw new Error(
@@ -71,20 +72,20 @@ const Confirmation = () => {
         }
         return;
       }
-
+  
       // Step 3: Handle Razorpay payment
       if (!window.Razorpay) {
         toast.error("Payment service unavailable. Please try later.");
         return;
       }
-
+  
       const { data: paymentData } = await getPayment();
       const { data: paymentOrder } = await makePayment(total);
-
+  
       if (!paymentOrder || !paymentOrder.order) {
         throw new Error("Failed to create Razorpay order.");
       }
-
+  
       const options = {
         key: paymentData.key,
         amount: paymentOrder.order.amount,
@@ -106,10 +107,11 @@ const Confirmation = () => {
             await handlePaymentVerification(response);
             orderDetails.razorpayPaymentId = response.razorpay_payment_id;
             orderDetails.razorpayOrderId = response.razorpay_order_id;
-
+  
             const { data } = await placeOrder(orderDetails);
             if (data.success) {
               navigate(`/placed/${data.order._id}`);
+              await clearCartAPI(orderDetails.userId);
               dispatch(clearCart());
             }
 
@@ -119,7 +121,7 @@ const Confirmation = () => {
           }
         },
       };
-
+  
       const razorpayInstance = new window.Razorpay(options);
       razorpayInstance.open();
     } catch (error) {

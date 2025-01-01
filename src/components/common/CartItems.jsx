@@ -1,11 +1,21 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import rightArrow from "../../assets/icons/rightArrow.png";
-import { selectCartDetails } from "../../redux/cartSlice";
+import { fetchLoggedInCart, selectCartDetails } from "../../redux/cartSlice";
+import { useEffect } from "react";
 
 const CartItems = () => {
+  const dispatch = useDispatch();
+  const { isAuthenticated, userId } = useSelector((state) => state.auth);
   const { cart } = useSelector((state) => state.cart);
   const { subtotal, shipping, total, totalItemsInCart } = useSelector(selectCartDetails);
+
+  useEffect(() => {
+    if (isAuthenticated && userId) {
+      dispatch(fetchLoggedInCart(userId));
+    }
+  }, [dispatch, isAuthenticated, userId]);
+
 
   return (
     <div>
@@ -56,7 +66,7 @@ const CartItems = () => {
                   Size: {item.selectedSize.size}
                 </p>
                 <p className="text-sm mt-1 text-gray-900 font-medium">
-                  ₹ {item.selectedSize.price}
+                  ₹ {item.selectedSize.price * item.quantity}
                 </p>
               </div>
             </div>

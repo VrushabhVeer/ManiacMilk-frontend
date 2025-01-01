@@ -1,12 +1,22 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getCartAPI } from "../utils/apis";
+import { getCartAPI, mergeCartAPI } from "../utils/apis";
 
 const localStorageKey = "guestCart";
 
-// Load cart from localStorage for guest users
+// Helper function to load cart from localStorage for guest users
 const loadGuestCart = () => {
   const savedCart = localStorage.getItem(localStorageKey);
   return savedCart ? JSON.parse(savedCart) : [];
+};
+
+// Helper function to persist cart for guest users
+const saveGuestCart = (cart) => {
+  localStorage.setItem(localStorageKey, JSON.stringify(cart));
+};
+
+// Helper function to clear guest cart from localStorage
+const clearGuestCart = () => {
+  localStorage.removeItem(localStorageKey);
 };
 
 // Async thunk to fetch cart data for logged-in users
@@ -18,17 +28,26 @@ export const fetchLoggedInCart = createAsyncThunk(
   }
 );
 
+// Async thunk to merge guest cart with logged-in user's cart
+export const mergeGuestCart = createAsyncThunk(
+  "cart/mergeGuestCart",
+  async ({ userId, guestCart }, { rejectWithValue }) => {
+    try {
+      const response = await mergeCartAPI({ userId, items: guestCart });
+      clearGuestCart(); // Clear the guest cart after successful merge
+      return response.data.items; // Return the merged cart items
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 const initialState = {
   cart: loadGuestCart(),
   isAuthenticated: false,
   userId: null,
   isLoading: false,
   error: null,
-};
-
-// Helper function to persist cart for guest users
-const saveGuestCart = (cart) => {
-  localStorage.setItem(localStorageKey, JSON.stringify(cart));
 };
 
 const findProduct = (cart, productId, size) =>
@@ -42,7 +61,6 @@ const cartSlice = createSlice({
   reducers: {
     setCart: (state, action) => {
       const product = action.payload;
-
       const existingProduct = findProduct(
         state.cart,
         product._id,
@@ -54,9 +72,6 @@ const cartSlice = createSlice({
       } else {
         state.cart.push({ ...product, quantity: product.quantity || 1 });
       }
-
-      // Save cart to localStorage for guest users
-      // saveGuestCart(state.cart);
 
       if (!state.isAuthenticated) {
         saveGuestCart(state.cart); // Save guest cart to localStorage
@@ -70,8 +85,6 @@ const cartSlice = createSlice({
           !(item._id === productId && item.selectedSize.size === size.size)
       );
 
-      // Save cart to localStorage for guest users
-      // saveGuestCart(state.cart);
       if (!state.isAuthenticated) {
         saveGuestCart(state.cart); // Save guest cart to localStorage
       }
@@ -79,8 +92,6 @@ const cartSlice = createSlice({
 
     clearCart: (state) => {
       state.cart = [];
-      // saveGuestCart(state.cart); // Clear localStorage for guest users
-
       if (!state.isAuthenticated) {
         saveGuestCart(state.cart); // Save guest cart to localStorage
       }
@@ -91,7 +102,6 @@ const cartSlice = createSlice({
       const product = findProduct(state.cart, productId, size);
       if (product) product.quantity += 1;
 
-      // saveGuestCart(state.cart); // Save updated cart for guest users
       if (!state.isAuthenticated) {
         saveGuestCart(state.cart); // Save guest cart to localStorage
       }
@@ -110,7 +120,7 @@ const cartSlice = createSlice({
           );
         }
       }
-      // saveGuestCart(state.cart); // Save updated cart for guest users
+
       if (!state.isAuthenticated) {
         saveGuestCart(state.cart); // Save guest cart to localStorage
       }
@@ -120,6 +130,16 @@ const cartSlice = createSlice({
     setAuth: (state, action) => {
       state.isAuthenticated = action.payload.isAuthenticated;
       state.userId = action.payload.userId;
+
+      if (state.isAuthenticated) {
+        const guestCart = state.cart;
+        state.cart = []; // Clear the local state cart to sync with the server
+        saveGuestCart([]); // Clear guest cart from localStorage
+
+        // Dispatch actions to fetch logged-in cart and merge the guest cart
+        fetchLoggedInCart(action.payload.userId);
+        mergeGuestCart({ userId: action.payload.userId, guestCart });
+      }
     },
   },
 
@@ -136,6 +156,12 @@ const cartSlice = createSlice({
       .addCase(fetchLoggedInCart.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
+      })
+      .addCase(mergeGuestCart.fulfilled, (state, action) => {
+        state.cart = action.payload;
+      })
+      .addCase(mergeGuestCart.rejected, (state, action) => {
+        state.error = action.payload;
       });
   },
 });
@@ -148,7 +174,10 @@ export const selectCartDetails = (state) => {
   }, 0);
   const shipping = cart.length > 0 ? 20 : 0;
   const total = subtotal + shipping;
-  const totalItemsInCart = cart.reduce((total, item) => total + item.quantity, 0);
+  const totalItemsInCart = cart.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
 
   return { subtotal, shipping, total, totalItemsInCart };
 };

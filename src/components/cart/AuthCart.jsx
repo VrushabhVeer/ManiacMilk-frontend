@@ -1,54 +1,28 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { getCartAPI } from "../../utils/apis";
 import { Link } from "react-router-dom";
+import { clearCart, fetchLoggedInCart, deleteProduct } from "../../redux/cartSlice";
+import { clearCartAPI } from "../../utils/apis";
 import emptyImage from "../../assets/images/empty.png";
 import rightArrow from "../../assets/icons/rightArrow.png";
 import Modal from "../common/Modal";
-import { fetchLoggedInCart } from "../../redux/cartSlice";
 
 const AuthCart = () => {
     const { isAuthenticated, userId } = useSelector((state) => state.auth);
-    // const [cart, setCart] = useState([]);
-    // const [isLoading, setIsLoading] = useState(false);
-    // const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalAction, setModalAction] = useState(null);
-    // const [selectedProductId, setSelectedProductId] = useState(null);
-
+    const [selectedProductId, setSelectedProductId] = useState(null);
     const [subtotal, setSubtotal] = useState(0);
-    const [shipping] = useState(20); // Example flat shipping rate
+    const [shipping] = useState(20);
     const [total, setTotal] = useState(0);
-
     const dispatch = useDispatch();
-
-    // // Fetch cart items from API
-    // useEffect(() => {
-    //     if (isAuthenticated && userId) {
-    //         const fetchCart = async () => {
-    //             setIsLoading(true);
-    //             setError(null);
-    //             try {
-    //                 const response = await getCartAPI(userId);
-    //                 setCart(response.data.items || []);
-    //             } catch {
-    //                 setError("Failed to fetch cart items.");
-    //             } finally {
-    //                 setIsLoading(false);
-    //             }
-    //         };
-    //         fetchCart();
-    //     }
-    // }, [isAuthenticated, userId]);
-
     const cart = useSelector((state) => state.cart.cart);
 
-  useEffect(() => {
-    if (isAuthenticated && userId) {
-      dispatch(fetchLoggedInCart(userId));
-    }
-  }, [isAuthenticated, userId, dispatch]);
-
+    useEffect(() => {
+        if (isAuthenticated && userId) {
+            dispatch(fetchLoggedInCart(userId));
+        }
+    }, [isAuthenticated, userId, dispatch]);
 
     // Calculate totals
     useEffect(() => {
@@ -66,7 +40,7 @@ const AuthCart = () => {
     };
 
     const handleRemove = (productId, size) => {
-        // setSelectedProductId({ productId, size });
+        setSelectedProductId({ productId, size });
         setModalAction("remove");
         setIsModalOpen(true);
     };
@@ -91,32 +65,20 @@ const AuthCart = () => {
     //     );
     // };
 
-    // const handleConfirm = async () => {
-    //     if (modalAction === "clear") {
-    //         setCart([]);
-    //     } else if (modalAction === "remove" && selectedProductId) {
-    //         setCart((prevCart) =>
-    //             prevCart.filter(
-    //                 (item) =>
-    //                     item._id !== selectedProductId.productId ||
-    //                     item.selectedSize.size !== selectedProductId.size.size
-    //             )
-    //         );
-    //     }
-    //     setIsModalOpen(false);
-    // };
+    const handleConfirm = async () => {
+        if (modalAction === "clear") {
+            await clearCartAPI(userId);
+            dispatch(clearCart());
+        } else if (modalAction === "remove" && selectedProductId) {
+            dispatch(deleteProduct(selectedProductId));
+        
+        }
+        setIsModalOpen(false);
+    };
 
-    // const handleCancel = () => {
-    //     setIsModalOpen(false);
-    // };
-
-    // if (isLoading) {
-    //     return <p>Loading cart...</p>;
-    // }
-
-    // if (error) {
-    //     return <p>{error}</p>;
-    // }
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <div className="hero">
@@ -128,8 +90,8 @@ const AuthCart = () => {
                         ? "Are you sure you want to clear the cart?"
                         : "Are you sure you want to remove this item from the cart?"
                 }
-                // onConfirm={handleConfirm}
-                // onCancel={handleCancel}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
             />
 
             <div className="w-11/12 md:w-10/12 mx-auto pt-10 pb-10 md:pb-20">
@@ -230,7 +192,9 @@ const AuthCart = () => {
                                             )}
 
                                             <button
-                                                onClick={() => handleRemove(item._id, item.selectedSize)}
+                                                onClick={() =>
+                                                    handleRemove(item._id, item.selectedSize)
+                                                }
                                                 className="mt-2 text-red-500 text-sm hover:underline"
                                             >
                                                 Remove
@@ -273,7 +237,7 @@ const AuthCart = () => {
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default AuthCart
+export default AuthCart;

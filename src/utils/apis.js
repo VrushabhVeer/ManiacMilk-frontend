@@ -98,7 +98,8 @@ export const cancelOrderById = (orderId) =>
   axiosInstance.put(`/orders/cancel/${orderId}`);
 
 // Cart APIs
-export const addToCartAPI = (payload) => axiosInstance.post("/cart/add", payload);
+export const addToCartAPI = (payload) =>
+  axiosInstance.post("/cart/add", payload);
 
 export const getCartAPI = (userId) => axiosInstance.get(`/cart/${userId}`);
 
@@ -108,7 +109,9 @@ export const updateCartAPI = (itemId, payload) =>
 export const removeCartItemAPI = (itemId) =>
   axiosInstance.delete(`/cart/delete/${itemId}`);
 
-export const clearCartAPI = () => axiosInstance.delete(`/clear`);
+// export const clearCartAPI = () => axiosInstance.delete(`/clear`);
+export const clearCartAPI = (userId) =>
+  axiosInstance.post(`/cart/clear`, { userId });
 
 export const mergeCartAPI = (payload) =>
   axiosInstance.post("/cart/merge", payload);

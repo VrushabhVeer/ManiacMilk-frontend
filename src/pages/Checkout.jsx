@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAddress } from "../redux/addressSlice";
 import { Link, useNavigate } from "react-router-dom";
 import CartItems from "../components/common/CartItems";
-import { addAddress, createUser } from "../utils/apis";
+import { addAddress, createUser, getAddress } from "../utils/apis";
 import { logout, restoreSession } from "../redux/authSlice";
 import { clearCart } from "../redux/cartSlice";
 
@@ -29,10 +29,30 @@ const Checkout = () => {
   const savedAddress = useSelector((state) => state.address.address);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const saveAddressRef = useRef(null);
 
   useEffect(() => {
     dispatch(restoreSession());
   }, [dispatch]);
+
+  useEffect(() => {
+    const loadAddress = async () => {
+      if (isAuthenticated) {
+        try {
+          const response = await getAddress(userId);
+          if (response.status === 200 && response.data) {
+            dispatch(setAddress(response.data)); // Save data to Redux
+          }
+        } catch (error) {
+          console.error("Failed to fetch address for logged-in user:", error);
+        }
+      } else {
+        // For guest users, the `savedAddress` is already loaded from `localStorage` by the Redux slice.
+      }
+    };
+
+    loadAddress();
+  }, [isAuthenticated, userId, dispatch]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -149,7 +169,10 @@ const Checkout = () => {
       email,
     };
 
-    const saveAddressCheckbox = document.getElementById("saveAddress").checked;
+    // const saveAddressCheckbox = document.getElementById("saveAddress").checked;
+    const saveAddressCheckbox = saveAddressRef.current
+      ? saveAddressRef.current.checked
+      : false;
 
     try {
       let currentUserId = userId;
@@ -409,13 +432,24 @@ const Checkout = () => {
             </div>
 
             <div className="flex items-center gap-2 mt-5">
-              <input
-                type="checkbox"
-                id="saveAddress"
-                name="saveAddress"
-                className="bg-inherit w-5 h-5"
-              />
-              <label htmlFor="">Save address for next time.</label>
+              {isAuthenticated && savedAddress && savedAddress.userId ? (
+                <p className="text-orange-500">
+                  We&lsquo;ve prefilled your details with your saved address.
+                </p>
+              ) : (
+                <>
+                  <input
+                    type="checkbox"
+                    id="saveAddress"
+                    name="saveAddress"
+                    className="bg-inherit w-5 h-5"
+                    ref={saveAddressRef}
+                  />
+                  <label htmlFor="saveAddress">
+                    Save address for next time.
+                  </label>
+                </>
+              )}
             </div>
 
             {/* Button */}

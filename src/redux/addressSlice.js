@@ -27,7 +27,6 @@ const addressSlice = createSlice({
     },
     deleteAddress: (state) => {
       state.address = {};
-      // if (!localStorage.getItem("token")) localStorage.removeItem(localStorageKey);
       localStorage.removeItem(localStorageKey);
     },
   },

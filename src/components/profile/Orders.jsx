@@ -101,7 +101,12 @@ const Orders = ({ userId }) => {
             <div className="flex justify-between items-center">
               <div>
                 <p className="font-semibold">Order ID: {order._id}</p>
-                <p className="text-sm text-gray-500">Status: {order.status}</p>
+                <p className={`text-sm ${order.status === "Completed"
+                    ? "text-green-500"
+                    : order.status === "Pending"
+                      ? "text-yellow-500"
+                      : "text-red-500"
+                  }`}>Status: {order.status}</p>
                 <p className="text-sm text-gray-500">Total: ₹{order.total}</p>
               </div>
               <button
@@ -166,12 +171,12 @@ const Orders = ({ userId }) => {
                     order.status === "Pending" && openCancelModal(order._id)
                   }
                   className={`mt-4 px-4 py-2 text-white text-sm rounded ${order.status === "Cancelled"
-                      ? "bg-gray-500 cursor-not-allowed"
-                      : order.status === "Pending"
-                        ? "bg-red-500 hover:bg-red-600"
-                        : order.status === "Completed"
-                          ? "bg-green-500 cursor-not-allowed"
-                          : ""
+                    ? "bg-gray-500 cursor-not-allowed"
+                    : order.status === "Pending"
+                      ? "bg-red-500 hover:bg-red-600"
+                      : order.status === "Completed"
+                        ? "bg-green-500 cursor-not-allowed"
+                        : ""
                     }`}
                   disabled={order.status !== "Pending"} // Disable button for statuses other than Pending
                 >

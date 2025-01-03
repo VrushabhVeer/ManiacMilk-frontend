@@ -15,7 +15,7 @@ const saveGuestCart = (cart) => {
 };
 
 // Helper function to clear guest cart from localStorage
-const clearGuestCart = () => {
+export const clearGuestCart = () => {
   localStorage.removeItem(localStorageKey);
 };
 

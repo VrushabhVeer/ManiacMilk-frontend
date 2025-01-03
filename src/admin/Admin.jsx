@@ -1,10 +1,29 @@
 import { useEffect, useState } from "react";
 import { getAllUsers, getAllOrders } from "../utils/apis";
+import Users from "./Users";
+import AllOrders from "./AllOrders";
 
 const Admin = () => {
-  const [view, setView] = useState("users"); // State for selected view
+  const [view, setView] = useState("users");
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [completedOrders, setCompletedOrders] = useState({});
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    };
+
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  };
 
   // Fetch all users
   useEffect(() => {
@@ -36,101 +55,86 @@ const Admin = () => {
     }
   }, [view]);
 
+  const updateOrderStatus = async (orderId) => {
+    const url = `http://localhost:8000/orders/complete/${orderId}`;
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  
+    if (!response.ok) {
+      throw new Error(`Failed to update order status: ${response.status}`);
+    }
+  
+    const data = await response.json(); // Read response body only once
+    console.log("Response data:", data);
+  
+    // Update the orders state to reflect the changes immediately
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order._id === orderId ? { ...order, status: "Completed" } : order
+      )
+    );
+  
+    return data;
+  };  
+
+  const handleToggleCompletion = async (orderId) => {
+    try {
+      const status = completedOrders[orderId] ? "pending" : "completed";
+      const updatedCompletedOrders = {
+        ...completedOrders,
+        [orderId]: !completedOrders[orderId],
+      };
+      setCompletedOrders(updatedCompletedOrders);
+
+      const response = await updateOrderStatus(orderId, status);
+      console.log("Order status updated:", response);
+    } catch (error) {
+      console.error("Error updating order status:", error.message);
+    }
+  };
+
   return (
     <div className="w-11/12 md:w-10/12 mx-auto mb-10 md:mb-20 pt-10">
-      <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
+      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
       {/* Breadcrumb Navigation */}
       <div className="flex space-x-4 mb-6">
         <button
-          className={`px-4 py-2 rounded ${
-            view === "users" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
+          className={`px-4 py-2 rounded ${view === "users" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
           onClick={() => setView("users")}
         >
           Users
         </button>
         <button
-          className={`px-4 py-2 rounded ${
-            view === "orders" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
+          className={`px-4 py-2 rounded ${view === "orders" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
           onClick={() => setView("orders")}
         >
           Orders
         </button>
         <button
-          className={`px-4 py-2 rounded ${
-            view === "products" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
+          className={`px-4 py-2 rounded ${view === "products" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
           onClick={() => setView("products")}
         >
-          Add Products
+          Products
         </button>
       </div>
 
       {/* Content Rendering */}
-      {view === "users" && (
-        <div>
-          <h2 className="text-xl font-semibold mb-4">All Users</h2>
-          {users.length > 0 ? (
-            <table className="table-auto w-full border-collapse border border-gray-200">
-              <thead>
-                <tr>
-                  <th className="border px-4 py-2">First Name</th>
-                  <th className="border px-4 py-2">Last Name</th>
-                  <th className="border px-4 py-2">Email</th>
-                  <th className="border px-4 py-2">Mobile</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user, index) => (
-                  <tr key={index} className="text-center">
-                    <td className="border px-4 py-2">{user.firstname || "N/A"}</td>
-                    <td className="border px-4 py-2">{user.lastname || "N/A"}</td>
-                    <td className="border px-4 py-2">{user.email}</td>
-                    <td className="border px-4 py-2">{user.mobile || "N/A"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p className="text-gray-500">No users found.</p>
-          )}
-        </div>
-      )}
-
+      {view === "users" && <Users users={users} />}
       {view === "orders" && (
-        <div>
-          <h2 className="text-xl font-semibold mb-4">All Orders</h2>
-          {orders.length > 0 ? (
-            <table className="table-auto w-full border-collapse border border-gray-200">
-              <thead>
-                <tr>
-                  <th className="border px-4 py-2">Order ID</th>
-                  <th className="border px-4 py-2">User ID</th>
-                  <th className="border px-4 py-2">Total</th>
-                  <th className="border px-4 py-2">Status</th>
-                  <th className="border px-4 py-2">Created At</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order, index) => (
-                  <tr key={index} className="text-center">
-                    <td className="border px-4 py-2">{order._id}</td>
-                    <td className="border px-4 py-2">{order.userId}</td>
-                    <td className="border px-4 py-2">{order.total}</td>
-                    <td className="border px-4 py-2">{order.status}</td>
-                    <td className="border px-4 py-2">
-                      {new Date(order.createdAt).toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p className="text-gray-500">No orders found.</p>
-          )}
-        </div>
+        <AllOrders
+          orders={orders}
+          formatDate={formatDate}
+          handleToggleCompletion={handleToggleCompletion}
+          completedOrders={completedOrders}
+        />
       )}
     </div>
   );

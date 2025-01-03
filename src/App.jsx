@@ -13,11 +13,17 @@ function App() {
     dispatch(restoreSession());
   }, [dispatch]);
 
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
   return (
     <>
-      <Navbar />
+      {/* <Navbar />
       <AllRoutes />
-      <Footer />
+      <Footer /> */}
+
+      {!isAdminRoute && <Navbar />}
+      <AllRoutes />
+      {!isAdminRoute && <Footer />}
     </>
   );
 }

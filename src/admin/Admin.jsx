@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getAllUsers, getAllOrders } from "../utils/apis";
 import Users from "./Users";
 import AllOrders from "./AllOrders";
+import { updateOrderStatusAPI } from "../utils/apis"; // Import API
 
 const Admin = () => {
   const [view, setView] = useState("users");
@@ -11,7 +12,6 @@ const Admin = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-
     const options = {
       weekday: "long",
       year: "numeric",
@@ -21,11 +21,9 @@ const Admin = () => {
       minute: "2-digit",
       hour12: true,
     };
-
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
 
-  // Fetch all users
   useEffect(() => {
     if (view === "users") {
       const fetchUsers = async () => {
@@ -37,12 +35,7 @@ const Admin = () => {
         }
       };
       fetchUsers();
-    }
-  }, [view]);
-
-  // Fetch all orders
-  useEffect(() => {
-    if (view === "orders") {
+    } else if (view === "orders") {
       const fetchOrders = async () => {
         try {
           const response = await getAllOrders();
@@ -55,43 +48,33 @@ const Admin = () => {
     }
   }, [view]);
 
-  const updateOrderStatus = async (orderId) => {
-    const url = `http://localhost:8000/orders/complete/${orderId}`;
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  
-    if (!response.ok) {
-      throw new Error(`Failed to update order status: ${response.status}`);
-    }
-  
-    const data = await response.json(); // Read response body only once
-    console.log("Response data:", data);
-  
-    // Update the orders state to reflect the changes immediately
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order._id === orderId ? { ...order, status: "Completed" } : order
-      )
-    );
-  
-    return data;
-  };  
-
   const handleToggleCompletion = async (orderId) => {
     try {
-      const status = completedOrders[orderId] ? "pending" : "completed";
       const updatedCompletedOrders = {
         ...completedOrders,
         [orderId]: !completedOrders[orderId],
       };
+
       setCompletedOrders(updatedCompletedOrders);
 
-      const response = await updateOrderStatus(orderId, status);
-      console.log("Order status updated:", response);
+      // Call the new API
+      const response = await updateOrderStatusAPI(orderId);
+
+      // Update state immediately
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === orderId
+            ? {
+                ...order,
+                status: updatedCompletedOrders[orderId]
+                  ? "Completed"
+                  : "Pending",
+              }
+            : order
+        )
+      );
+
+      console.log("Order status updated:", response.data);
     } catch (error) {
       console.error("Error updating order status:", error.message);
     }
@@ -104,22 +87,25 @@ const Admin = () => {
       {/* Breadcrumb Navigation */}
       <div className="flex space-x-4 mb-6">
         <button
-          className={`px-4 py-2 rounded ${view === "users" ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
+          className={`px-4 py-2 rounded ${
+            view === "users" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
           onClick={() => setView("users")}
         >
           Users
         </button>
         <button
-          className={`px-4 py-2 rounded ${view === "orders" ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
+          className={`px-4 py-2 rounded ${
+            view === "orders" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
           onClick={() => setView("orders")}
         >
           Orders
         </button>
         <button
-          className={`px-4 py-2 rounded ${view === "products" ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
+          className={`px-4 py-2 rounded ${
+            view === "products" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
           onClick={() => setView("products")}
         >
           Products

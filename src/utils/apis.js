@@ -52,6 +52,19 @@ export const login = (payload) =>
 export const otpVerification = (payload) =>
   axiosInstance.post("users/otp_verification", payload);
 export const getProfile = () => axiosInstance.get("/users/profile");
+export const adminLogin = (payload) =>
+  axiosInstance.post("/users/admin/login", payload);
+
+export const createUser = (payload) =>
+  axiosInstance.post("/users/create", payload);
+
+export const editProfile = (payload) => {
+  axiosInstance.put("/users/edit_profile", payload);
+};
+
+export const deleteAccount = () => {
+  axiosInstance.delete("/users/delete_account");
+};
 
 // Product APIs
 export const getAllProducts = () => axiosInstance.get("/products/allproducts");
@@ -116,18 +129,10 @@ export const clearCartAPI = (userId) =>
 export const mergeCartAPI = (payload) =>
   axiosInstance.post("/cart/merge", payload);
 
-// user API
-export const createUser = (payload) =>
-  axiosInstance.post("/users/create", payload);
-
-export const editProfile = (payload) => {
-  axiosInstance.put("/users/edit_profile", payload);
-};
-
-export const deleteAccount = () => {
-  axiosInstance.delete("/users/delete_account");
-};
-
 // admin api calls
 export const getAllOrders = () => axiosInstance.get("/orders/admin/allorders");
 export const getAllUsers = () => axiosInstance.get("/users/admin/allusers");
+// Update order status
+export const updateOrderStatusAPI = (orderId, orderStatus) => {
+  return axiosInstance.put(`/orders/complete/${orderId}`, { orderStatus });
+};

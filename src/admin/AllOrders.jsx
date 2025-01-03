@@ -44,7 +44,7 @@ const AllOrders = ({ orders, formatDate, handleToggleCompletion }) => {
                   <th className="border px-4 py-2">Email</th>
                   <th className="border px-4 py-2">Order ID</th>
                   <th className="border px-4 py-2">User ID</th>
-                  <th className="border px-4 py-2">Total</th>
+                  <th className="border px-4 py-2">Total Ammount</th>
                   <th className="border px-4 py-2">Status</th>
                   <th className="border px-4 py-2">Created At</th>
                   <th className="border px-4 py-2">Action</th>
@@ -57,11 +57,11 @@ const AllOrders = ({ orders, formatDate, handleToggleCompletion }) => {
                       {order.address.firstname} {order.address.lastname}
                     </td>
                     <td className="border px-4 py-2">{order.address.email}</td>
-                    <td className="border px-4 py-2">{order._id}</td>
-                    <td className="border px-4 py-2">{order.userId}</td>
+                    <td className="border px-4 py-2 text-sm">{order._id}</td>
+                    <td className="border px-4 py-2 text-sm">{order.userId}</td>
                     <td className="border px-4 py-2">₹ {order.total}</td>
                     <td className="border px-4 py-2">{order.status}</td>
-                    <td className="border px-4 py-2">{formatDate(order.createdAt)}</td>
+                    <td className="border px-4 py-2 text-sm">{formatDate(order.createdAt)}</td>
                     <td className="border px-4 py-2">
                       <button
                         className={`px-4 py-2 rounded-full text-[12px] font-medium tracking-wide ${

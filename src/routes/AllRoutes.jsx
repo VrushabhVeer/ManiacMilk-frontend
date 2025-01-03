@@ -14,6 +14,7 @@ import NotFound from "../pages/NotFound";
 import Admin from "../admin/Admin";
 import PrivateRoute from "../components/login/PrivateRoute";
 import AdminLogin from "../admin/AdminLogin";
+import AdminPrivateRoute from "../admin/AdminPrivateRoute";
 
 const AllRoutes = () => {
   return (
@@ -35,7 +36,7 @@ const AllRoutes = () => {
       <Route path="*" element={<NotFound />} />
 
       {/* admin routes */}
-      <Route path="/admin" element={<Admin />} />
+      <Route path="/admin" element={<AdminPrivateRoute element={<Admin />} />} />
       <Route path="/admin/login" element={<AdminLogin />} />
     </Routes>
   );

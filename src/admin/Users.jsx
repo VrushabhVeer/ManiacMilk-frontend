@@ -45,7 +45,7 @@ const Users = ({ users }) => {
         <>
           <ul className="">
             {currentUsers.map((user, index) => (
-              <li key={index} className={`p-4 mt-4 border border-gray-300 ${expandedUserId === user._id ? "bg-gray-50" : ""}`}>
+              <li key={index} className={`p-4 mt-4 border border-gray-300 rounded ${expandedUserId === user._id ? "bg-gray-50" : ""}`}>
                 {/* User Summary */}
                 <div className="flex items-center justify-between">
                   <div>

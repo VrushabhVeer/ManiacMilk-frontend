@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchProfile, updateProfile, deleteUserAccount } from "../redux/profileSlice";
 import Orders from "../components/profile/Orders";
-import CompletedOrders from "../components/profile/CompletedOrders";
 import Modal from "../components/common/Modal";
 import toast from "react-hot-toast";
 import ProfileInfo from "../components/profile/ProfileInfo";
@@ -65,8 +64,6 @@ const Profile = () => {
         );
       case "orders":
         return <Orders userId={userId} />;
-      case "completed":
-        return <CompletedOrders />;
       default:
         return null;
     }
@@ -88,12 +85,6 @@ const Profile = () => {
             onClick={() => setActiveTab("orders")}
           >
             Orders
-          </p>
-          <p
-            className={`cursor-pointer ${activeTab === "completed" ? "font-semibold" : ""}`}
-            onClick={() => setActiveTab("completed")}
-          >
-            Completed Orders
           </p>
         </div>
         <div className="w-full mt-8">{renderContent()}</div>

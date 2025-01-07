@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Orders from "../components/profile/Orders";
+import Orders from "./Orders";
 
 /* eslint-disable react/prop-types */
 const Users = ({ users }) => {
@@ -45,7 +45,7 @@ const Users = ({ users }) => {
         <>
           <ul className="">
             {currentUsers.map((user, index) => (
-              <li key={index} className={`p-4 mt-4 border border-gray-300 rounded ${expandedUserId === user._id ? "bg-gray-50" : ""}`}>
+              <li key={index} className="p-4 mt-4 border border-gray-300 rounded">
                 {/* User Summary */}
                 <div className="flex items-center justify-between">
                   <div>
@@ -91,8 +91,8 @@ const Users = ({ users }) => {
               <button
                 key={page}
                 className={`px-4 py-2 rounded text-sm ${currentPage === page
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-300 hover:bg-gray-400"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-300 hover:bg-gray-400"
                   }`}
                 onClick={() => handlePageChange(page)}
               >

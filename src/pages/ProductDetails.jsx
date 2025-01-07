@@ -60,7 +60,7 @@ const ProductDetails = () => {
 
     if (isAuthenticated) {
       try {
-        await addToCartAPI(payload); 
+        await addToCartAPI(payload);
         dispatch(setCart(cartItem));
         toast.success("Added to Cart");
       } catch (error) {
@@ -133,8 +133,8 @@ const ProductDetails = () => {
                   key={index}
                   onClick={() => handleSizeClick(size)}
                   className={`cursor-pointer py-2 px-4 border text-sm ${size.size === selectedSize?.size
-                      ? "bg-green-100 border-2 border-green-400"
-                      : "bg-green-50 hover:bg-green-100 border-gray-300"
+                    ? "bg-green-100 border-2 border-green-400"
+                    : "bg-green-50 hover:bg-green-100 border-gray-300"
                     }`}
                 >
                   {size.size}
@@ -163,7 +163,7 @@ const ProductDetails = () => {
                   +
                 </button>
               </div>
-              {quantity > 4 && (
+              {quantity >= 4 && (
                 <p className="text-red-600 text-sm mt-2">
                   Maximum limit of 4 items reached.
                 </p>

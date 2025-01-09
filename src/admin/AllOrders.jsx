@@ -128,7 +128,7 @@ const AllOrders = ({ orders, formatDate, handleToggleCompletion }) => {
           </div>
         </>
       ) : (
-        <p className="text-gray-500 text-center">No orders found.</p>
+        <p className="text-gray-500 text-center">No pending orders found.</p>
       )}
     </div>
   );

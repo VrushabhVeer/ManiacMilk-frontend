@@ -122,7 +122,6 @@ export const updateCartAPI = (itemId, payload) =>
 export const removeCartItemAPI = (itemId) =>
   axiosInstance.delete(`/cart/delete/${itemId}`);
 
-// export const clearCartAPI = () => axiosInstance.delete(`/clear`);
 export const clearCartAPI = (userId) =>
   axiosInstance.post(`/cart/clear`, { userId });
 

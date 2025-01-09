@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { getOrderByUserId } from "../utils/apis";
 
 const Orders = ({ userId }) => {
@@ -31,14 +30,8 @@ const Orders = ({ userId }) => {
       <p className="font-semibold mb-5 text-xl">Orders</p>
       {orders.length === 0 ? (
         <div className="text-center mt-10">
-          <p className="font-semibold text-lg">
-            You haven&lsquo;t placed any orders yet.
-          </p>
-          <p className="text-orange-500 mt-2">
-            <Link to="/products">
-              <span className="underline">Explore</span>
-            </Link>{" "}
-            our products and place your first order!
+          <p className="font-semibold text-orange-500">
+            No orders available for this user.
           </p>
         </div>
       ) : (

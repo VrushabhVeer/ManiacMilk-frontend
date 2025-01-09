@@ -1,15 +1,18 @@
+// 
+
+
 import { useEffect, useState } from "react";
-import { getAllUsers, getAllOrders } from "../utils/apis";
+import { getAllUsers, getAllOrders, updateOrderStatusAPI } from "../utils/apis";
 import Users from "./Users";
 import AllOrders from "./AllOrders";
-import { updateOrderStatusAPI } from "../utils/apis"; // Import API
+import CompletedOrders from "./CompletedOrders";
 
 const Admin = () => {
   const [view, setView] = useState("users");
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [completedOrders, setCompletedOrders] = useState({});
 
+  // Format date utility
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = {
@@ -24,6 +27,7 @@ const Admin = () => {
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
 
+  // Fetch users or orders based on the current view
   useEffect(() => {
     if (view === "users") {
       const fetchUsers = async () => {
@@ -35,7 +39,7 @@ const Admin = () => {
         }
       };
       fetchUsers();
-    } else if (view === "orders") {
+    } else if (view === "orders" || view === "completedOrders") {
       const fetchOrders = async () => {
         try {
           const response = await getAllOrders();
@@ -48,33 +52,22 @@ const Admin = () => {
     }
   }, [view]);
 
+  // Toggle order completion
   const handleToggleCompletion = async (orderId) => {
     try {
-      const updatedCompletedOrders = {
-        ...completedOrders,
-        [orderId]: !completedOrders[orderId],
-      };
+      const updatedOrder = await updateOrderStatusAPI(orderId); // API call to update order status
+      const updatedStatus = updatedOrder.data.order.status;
 
-      setCompletedOrders(updatedCompletedOrders);
-
-      // Call the new API
-      const response = await updateOrderStatusAPI(orderId);
-
-      // Update state immediately
+      // Update orders state
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order._id === orderId
-            ? {
-                ...order,
-                status: updatedCompletedOrders[orderId]
-                  ? "Completed"
-                  : "Pending",
-              }
+            ? { ...order, status: updatedStatus }
             : order
         )
       );
 
-      console.log("Order status updated:", response.data);
+      console.log(`Order status updated to ${updatedStatus}`);
     } catch (error) {
       console.error("Error updating order status:", error.message);
     }
@@ -84,29 +77,34 @@ const Admin = () => {
     <div className="w-11/12 md:w-10/12 mx-auto mb-10 md:mb-20 pt-10">
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
-      {/* Breadcrumb Navigation */}
+      {/* Navigation Buttons */}
       <div className="flex space-x-4 mb-6">
         <button
-          className={`px-4 py-2 rounded ${
-            view === "users" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
+          className={`px-4 py-2 rounded ${view === "users" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
           onClick={() => setView("users")}
         >
           Users
         </button>
         <button
-          className={`px-4 py-2 rounded ${
-            view === "orders" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
+          className={`px-4 py-2 rounded ${view === "orders" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
           onClick={() => setView("orders")}
         >
-          Orders
+          Pending Orders
         </button>
         <button
-          className={`px-4 py-2 rounded ${
-            view === "products" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
-          onClick={() => setView("products")}
+          className={`px-4 py-2 rounded ${view === "completedOrders" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
+          onClick={() => setView("completedOrders")}
+        >
+          Completed Orders
+        </button>
+
+        <button
+          className={`px-4 py-2 rounded ${view === "" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
+          onClick={() => setView("")}
         >
           Products
         </button>
@@ -116,10 +114,15 @@ const Admin = () => {
       {view === "users" && <Users users={users} />}
       {view === "orders" && (
         <AllOrders
-          orders={orders}
+          orders={orders.filter((order) => order.status !== "Completed")}
           formatDate={formatDate}
           handleToggleCompletion={handleToggleCompletion}
-          completedOrders={completedOrders}
+        />
+      )}
+      {view === "completedOrders" && (
+        <CompletedOrders
+          orders={orders.filter((order) => order.status === "Completed")}
+          formatDate={formatDate}
         />
       )}
     </div>

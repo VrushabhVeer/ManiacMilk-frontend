@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import Loader from "../common/Loader";
+import Cookies from "js-cookie";
 
 const PrivateRoute = ({ element: Component }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -10,7 +11,7 @@ const PrivateRoute = ({ element: Component }) => {
   console.log("PrivateRoute location state: private route", location.state);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     setIsAuthenticated(!!token);
   }, []);
 

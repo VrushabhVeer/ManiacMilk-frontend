@@ -57,7 +57,6 @@ const Profile = () => {
           <ProfileInfo
             profile={profile}
             onEdit={handleUpdateProfile}
-            // onDelete={() => dispatch(deleteUserAccount())}
             onDelete={() => setIsDeleteModalOpen(true)}
             userId={userId}
           />

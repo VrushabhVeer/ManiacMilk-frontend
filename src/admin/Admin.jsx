@@ -24,7 +24,7 @@ const Admin = () => {
       minute: "2-digit",
       hour12: true,
     };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
+    return new Intl.DateTimeFormat("en-IN", options).format(date);
   };
 
   // Fetch users or orders based on the current view

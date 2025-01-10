@@ -1,6 +1,7 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 import { baseURL } from "./data";
+import Cookies from "js-cookie";
 
 // Create Axios instance
 const axiosInstance = axios.create({
@@ -13,14 +14,13 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token"); // Retrieve token from localStorage
+    const token = Cookies.get("token"); // Retrieve token from cookies
     if (token) {
       config.headers.Authorization = `Bearer ${token}`; // Attach token to Authorization header
     }
     return config;
   },
   (error) => {
-    // Handle request errors
     toast.error("Request error occurred. Please try again.");
     return Promise.reject(error);
   }
@@ -36,12 +36,16 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Extract and show error message
     const errorMessage =
       error?.response?.data?.message ||
       error.message ||
       "Something went wrong.";
     toast.error(errorMessage);
+    
+    if (error.response?.status === 401) {
+      Cookies.remove("token"); // Clear the token from cookies
+      toast.error("Session expired. Please log in again.");
+    }
     return Promise.reject(error);
   }
 );

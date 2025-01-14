@@ -119,8 +119,13 @@ const Products = () => {
                       alt={product.name}
                       loading="lazy"
                     />
-
-                    <div className="text-white bg-orange-500 font-semibold text-[11px] absolute top-0 left py-1.5 px-2">
+                    <div
+                      className={`text-white font-semibold text-[11px] absolute top-0 left py-1.5 px-2 ${
+                        product.availability === "Out of Stock"
+                          ? "bg-red-500"
+                          : "bg-yellow-500"
+                      }`}
+                    >
                       {product.availability}
                     </div>
                   </div>
@@ -137,10 +142,20 @@ const Products = () => {
 
                 <button
                   onClick={() => handleCart(product)}
-                  className="bg-green-900 text-white w-full py-3 tracking-wide font-medium rounded-sm text-sm mt-2"
+                  disabled={product.availability === "Out of Stock"}
+                  className={`w-full py-3 tracking-wide font-medium rounded-sm text-sm mt-2 ${
+                    product.availability === "Out of Stock"
+                      ? "bg-green-900 cursor-not-allowed text-white"
+                      : "bg-green-900 text-white"
+                  }`}
                 >
                   Add to Cart
                 </button>
+                {product.availability === "Out of Stock" && (
+                  <p className="text-red-500 text-center mt-2 text-sm">
+                    Out of Stock
+                  </p>
+                )}
               </div>
             ))}
           </div>

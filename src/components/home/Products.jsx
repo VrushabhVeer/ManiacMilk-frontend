@@ -40,7 +40,7 @@ const Products = () => {
 
     if (isAuthenticated) {
       try {
-        await addToCartAPI(payload)
+        await addToCartAPI(payload);
         dispatch(setCart(cartItem));
         toast.success("Added to Cart");
       } catch {
@@ -70,7 +70,13 @@ const Products = () => {
                   loading="lazy"
                 />
               </Link>
-              <div className="text-white bg-orange-500 font-semibold text-[12px] absolute top-0 left p-1.5">
+              <div
+                className={`text-white font-semibold text-[12px] absolute top-0 left p-1.5 ${
+                  product.availability === "Out of Stock"
+                    ? "bg-red-500"
+                    : "bg-yellow-500"
+                }`}
+              >
                 {product.availability}
               </div>
             </div>
@@ -86,10 +92,21 @@ const Products = () => {
 
             <button
               onClick={() => handleCart(product)}
-              className="bg-green-900 text-white w-full py-3 tracking-wide font-medium rounded-md text-sm mt-3"
+              disabled={product.availability === "Out of Stock"}
+              className={`bg-green-900 text-white w-full py-3 tracking-wide font-medium rounded-md text-sm mt-3 ${
+                product.availability === "Out of Stock"
+                  ? "bg-green-900 cursor-not-allowed text-white"
+                  : ""
+              }`}
             >
               Add to Cart
             </button>
+
+            {product.availability === "Out of Stock" && (
+              <p className="text-red-500 text-center mt-2 text-sm">
+                Out of Stock
+              </p>
+            )}
           </div>
         ))}
       </div>

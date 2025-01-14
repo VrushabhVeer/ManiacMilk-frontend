@@ -1,7 +1,6 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 import { baseURL } from "./data";
-import Cookies from "js-cookie";
 
 // Create Axios instance
 const axiosInstance = axios.create({
@@ -14,13 +13,14 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = Cookies.get("token"); // Retrieve token from cookies
+    const token = localStorage.getItem("token"); // Retrieve token from localStorage
     if (token) {
       config.headers.Authorization = `Bearer ${token}`; // Attach token to Authorization header
     }
     return config;
   },
   (error) => {
+    // Handle request errors
     toast.error("Request error occurred. Please try again.");
     return Promise.reject(error);
   }
@@ -41,9 +41,9 @@ axiosInstance.interceptors.response.use(
       error.message ||
       "Something went wrong.";
     toast.error(errorMessage);
-    
+
     if (error.response?.status === 401) {
-      Cookies.remove("token"); // Clear the token from cookies
+      localStorage.removeItem("token"); // Clear the token from localStorage
       toast.error("Session expired. Please log in again.");
     }
     return Promise.reject(error);
@@ -135,6 +135,21 @@ export const mergeCartAPI = (payload) =>
 // admin api calls
 export const getAllOrders = () => axiosInstance.get("/orders/admin/allorders");
 export const getAllUsers = () => axiosInstance.get("/users/admin/allusers");
+
+export const createProduct = async (productData) => {
+  console.log("productData in createProduct api", productData);
+  return axiosInstance.post("/products/create", productData);
+};
+
+// Update an existing product
+export const updateProduct = async (id, productData) => {
+  return axiosInstance.put(`/products/${id}`, productData);
+};
+
+// Delete a product
+export const deleteProduct = async (id) => {
+  return axiosInstance.delete(`/products/${id}`);
+};
 // Update order status
 export const updateOrderStatusAPI = (orderId, orderStatus) => {
   return axiosInstance.put(`/orders/complete/${orderId}`, { orderStatus });

@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { login, otpVerification } from "../utils/apis";
 import { toast } from "react-hot-toast";
 import { fetchLoggedInCart } from "./cartSlice";
-import Cookies from "js-cookie";
 
 // Thunks
 export const sendOtp = createAsyncThunk(
@@ -28,13 +27,10 @@ export const verifyOtp = createAsyncThunk(
       const response = await otpVerification({ email, otp });
       const { token, user } = response.data;
 
-      // Save to cookies
-      Cookies.set("token", token, { secure: true, sameSite: "Strict" });
-      Cookies.set("userId", user._id, { secure: true, sameSite: "Strict" });
-      Cookies.set("userEmail", user.email, {
-        secure: true,
-        sameSite: "Strict",
-      });
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", user._id);
+      localStorage.setItem("userEmail", user.email);
+
       toast.success(response.data.message);
 
       dispatch(fetchLoggedInCart(user._id));
@@ -61,9 +57,7 @@ const authSlice = createSlice({
   },
   reducers: {
     logout: (state) => {
-      Cookies.remove("token");
-      Cookies.remove("userId");
-      Cookies.remove("userEmail");
+      localStorage.clear();
       state.email = null;
       state.user = null;
       state.token = null;
@@ -71,9 +65,9 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
     },
     restoreSession: (state) => {
-      const token = Cookies.get("token");
-      const userId = Cookies.get("userId");
-      const userEmail = Cookies.get("userEmail");
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+      const userEmail = localStorage.getItem("userEmail");
 
       if (token && userId) {
         state.isAuthenticated = true;

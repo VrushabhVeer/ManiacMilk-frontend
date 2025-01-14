@@ -56,7 +56,7 @@ const ProductDetails = () => {
     const payload = {
       userId,
       items: [cartItem],
-    }
+    };
 
     if (isAuthenticated) {
       try {
@@ -132,10 +132,11 @@ const ProductDetails = () => {
                 <div
                   key={index}
                   onClick={() => handleSizeClick(size)}
-                  className={`cursor-pointer py-2 px-4 border text-sm ${size.size === selectedSize?.size
-                    ? "bg-green-100 border-2 border-green-400"
-                    : "bg-green-50 hover:bg-green-100 border-gray-300"
-                    }`}
+                  className={`cursor-pointer py-2 px-4 border text-sm ${
+                    size.size === selectedSize?.size
+                      ? "bg-green-100 border-2 border-green-400"
+                      : "bg-green-50 hover:bg-green-100 border-gray-300"
+                  }`}
                 >
                   {size.size}
                 </div>
@@ -172,18 +173,31 @@ const ProductDetails = () => {
 
             <div className="flex items-center gap-3 mt-6">
               <button
-                className="bg-green-900 text-white px-8 py-3 uppercase rounded-full tracking-wide font-medium text-sm"
+                className={`px-8 py-3 uppercase rounded-full tracking-wide font-medium text-sm ${
+                  product.availability === "Out of Stock"
+                    ? "bg-green-900 cursor-not-allowed text-white"
+                    : "bg-green-900 text-white"
+                }`}
                 onClick={handleCart}
+                disabled={product.availability === "Out of Stock"}
               >
                 Add to Cart
               </button>
               <button
-                className="bg-green-900 text-white px-8 py-3 uppercase rounded-full tracking-wide font-medium text-sm"
+                className={`px-8 py-3 uppercase rounded-full tracking-wide font-medium text-sm ${
+                  product.availability === "Out of Stock"
+                    ? "bg-green-900 cursor-not-allowed text-white"
+                    : "bg-green-900 text-white"
+                }`}
                 onClick={handleBuyNow}
+                disabled={product.availability === "Out of Stock"}
               >
                 Buy Now
               </button>
             </div>
+            {product.availability === "Out of Stock" && (
+              <p className="text-red-500 mt-3 font-semibold">Out of Stock</p>
+            )}
 
             <p className="mt-6 font-medium">Description</p>
             <p className="mt-1 text-sm">{product.description}</p>

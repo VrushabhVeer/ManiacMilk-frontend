@@ -1,11 +1,9 @@
-// 
-
-
 import { useEffect, useState } from "react";
 import { getAllUsers, getAllOrders, updateOrderStatusAPI } from "../utils/apis";
 import Users from "./Users";
 import AllOrders from "./AllOrders";
 import CompletedOrders from "./CompletedOrders";
+import ProductListing from "./ProductListing";
 
 const Admin = () => {
   const [view, setView] = useState("users");
@@ -102,9 +100,9 @@ const Admin = () => {
         </button>
 
         <button
-          className={`px-4 py-2 rounded ${view === "" ? "bg-blue-500 text-white" : "bg-gray-200"
+          className={`px-4 py-2 rounded ${view === "productListing" ? "bg-blue-500 text-white" : "bg-gray-200"
             }`}
-          onClick={() => setView("")}
+          onClick={() => setView("productListing")}
         >
           Products
         </button>
@@ -124,6 +122,10 @@ const Admin = () => {
           orders={orders.filter((order) => order.status === "Completed")}
           formatDate={formatDate}
         />
+      )}
+
+      {view === "productListing" && (
+        <ProductListing />
       )}
     </div>
   );

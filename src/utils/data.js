@@ -16,6 +16,28 @@ import comma from "../assets/icons/comma.png";
 
 export const baseURL = "http://localhost:8000/";
 
+export const aboutContent = {
+  header: "About Us",
+  description:
+    "Welcome to our e-commerce platform, your trusted source for fresh and pure dairy products. We are committed to delivering the highest quality milk and dairy items directly to your doorstep, ensuring health and happiness for your family.",
+  highlights: [
+    "Fresh milk delivered directly from our farms with strict cold-chain care to preserve its natural goodness.",
+    "Naturally grazed cows, fed wholesome fodder. No hormones, antibiotics, or preservatives—just pure milk.",
+    "Fresh, unprocessed milk retains more vitamins, minerals, and natural flavor.",
+    "Milk is free from antibiotics and growth hormones, ensuring it’s safe and healthy.",
+    "Cows are treated with care, quality feed, and comfortable living for better milk.",
+  ],
+  whyChooseUs:
+    "We believe in the power of pure and natural dairy. Our commitment to quality begins at the farm, where every cow is cared for with love and attention. By maintaining ethical farming practices and a meticulous cold-chain process, we ensure that the milk and dairy products you receive are fresh, safe, and full of natural goodness. Join our journey to bring farm-fresh dairy to every home.",
+  mission:
+    "Our mission is to redefine the way people access dairy products by prioritizing health, sustainability, and community. We aim to support local farmers, reduce environmental impact, and provide our customers with the best dairy experience possible.",
+  contact: {
+    header: "Our Location",
+    description: "Have questions or need support? We’re here to help!",
+    linkText: "Contact Us >",
+  },
+};
+
 export const highlightsData = [
   {
     icon: farm,
@@ -63,16 +85,24 @@ export const highlightsData = [
 
 // Footer.jsx
 export const policies = [
-  "Privacy Policy",
-  "Terms & Conditions",
-  "Refund Policy",
-  "Shipping Policy",
+  { text: "Privacy Policy", path: "/privacy-policy" },
+  { text: "Terms & Conditions", path: "/terms-and-conditions" },
+  { text: "Refund Policy", path: "/refund-policy" },
+  { text: "Shipping Policy", path: "/shipping-policy" },
 ];
 
 export const socialMedia = [
-  { src: facebook, alt: "Facebook" },
-  { src: instagram, alt: "Instagram" },
-  { src: whatsapp, alt: "WhatsApp" },
+  {
+    src: facebook,
+    alt: "Facebook",
+    link: "https://www.instagram.com/maniacmilk/",
+  },
+  {
+    src: instagram,
+    alt: "Instagram",
+    link: "https://www.instagram.com/maniacmilk/",
+  },
+  { src: whatsapp, alt: "WhatsApp", link: "https://wa.me/917972344762" },
 ];
 
 export const address = [
@@ -83,11 +113,11 @@ export const address = [
 
 // Contact.jsx
 export const contactInfo = [
-  { icon: call, label: "Phone", text: "+91 9067543208", alt: "Call Icon" },
+  { icon: call, label: "Phone", text: "+91 7972 344762", alt: "Call Icon" },
   {
     icon: email,
     label: "Email",
-    text: "support@example.com",
+    text: "maniacmilkstore@gmail.com",
     alt: "Email Icon",
   },
 ];
@@ -102,7 +132,7 @@ export const TESTIMONIALS = [
     id: 1,
     rating: "★ ★ ★ ★",
     avatar: user,
-    comma:comma,
+    comma: comma,
     userName: "Suhas Joshi",
     description:
       "The milk is so fresh and creamy! It reminds me of the purity of farm-fresh milk we used to get in my village.",
@@ -111,7 +141,7 @@ export const TESTIMONIALS = [
     id: 2,
     rating: "★ ★ ★ ★ ★",
     avatar: user,
-    comma:comma,
+    comma: comma,
     userName: "Snehal Patil",
     description:
       "Loved the quality of the milk and paneer. It’s perfect for making authentic dishes.",
@@ -120,7 +150,7 @@ export const TESTIMONIALS = [
     id: 3,
     rating: "★ ★ ★ ★ ★",
     avatar: user,
-    comma:comma,
+    comma: comma,
     userName: "Ashwini Kulkarni",
     description:
       "The ghee is so aromatic and pure. It adds such a wonderful flavor to my Modaks and traditional sweets!",
@@ -129,7 +159,7 @@ export const TESTIMONIALS = [
     id: 4,
     rating: "★ ★ ★ ★",
     avatar: user,
-    comma:comma,
+    comma: comma,
     userName: "Amol Deshmukh",
     description:
       "The service is excellent, and the milk is always fresh. My morning tea has never tasted better.",
@@ -138,7 +168,7 @@ export const TESTIMONIALS = [
     id: 5,
     rating: "★ ★ ★ ★ ★",
     avatar: user,
-    comma:comma,
+    comma: comma,
     userName: "Swapnil Gokhale",
     description:
       "I’m very impressed with the quality of their organic milk. It’s healthy and perfect for my kids!",
@@ -147,7 +177,7 @@ export const TESTIMONIALS = [
     id: 6,
     rating: "★ ★ ★ ★",
     avatar: user,
-    comma:comma,
+    comma: comma,
     userName: "Shweta Bhosale",
     description:
       "Their dahi is thick and delicious. It’s perfect for making shrikhand and other desserts!",

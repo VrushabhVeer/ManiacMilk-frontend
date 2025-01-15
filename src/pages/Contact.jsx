@@ -3,6 +3,8 @@ import rightUpArrow from "../assets/icons/rightUpArrow.png";
 import { contactUs } from "../utils/apis.js";
 import { contactInfo, address, icons } from "../utils/data.js";
 import { Toaster } from "react-hot-toast";
+import copy from "../assets/icons/copy.png";
+import check from "../assets/icons/check.png";
 
 const Contact = () => {
   const [fullname, setFullname] = useState("");
@@ -10,9 +12,21 @@ const Contact = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
+  const [copiedIndex, setCopiedIndex] = useState(null); // State to track which item was copied
+
+  const handleCopy = (text, index) => {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        setCopiedIndex(index); // Set the index of the copied item
+        setTimeout(() => setCopiedIndex(null), 2000); // Reset after 2 seconds
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+      });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const contactData = {
       fullname,
       mobile,
@@ -37,7 +51,7 @@ const Contact = () => {
       <div className="w-11/12 mx-auto flex flex-col md:flex-col lg:flex-row xl:flex-row items-center gap-10 md:gap-20">
         <div className="w-full">
           <h1 className="text-4xl font-extrabold text-[#1a1d20]">Contact Us</h1>
-          <p className="mt-2 mb-5 text-gray-600">
+          <p className="mt-2 mb-10 text-gray-600">
             We’d love to hear from you! Whether you have questions, feedback, or
             need assistance, feel free to reach out through the form below. You
             can also connect with us via mobile or email. Let’s make your
@@ -45,9 +59,27 @@ const Contact = () => {
           </p>
 
           {contactInfo.map((info, index) => (
-            <div key={index} className="flex items-center gap-2">
+            <div key={index} className="flex items-center gap-2 mb-2">
               <img className="w-4" src={info.icon} alt={info.alt} loading="lazy" />
               <p>{info.text}</p>
+
+              <button className="ml-2" onClick={() => handleCopy(info.text, index)}>
+                {copiedIndex === index ? (
+                  <img
+                    src={check}
+                    alt="Check"
+                    className="w-5"
+                    loading="lazy"
+                  />
+                ) : (
+                  <img
+                    src={copy}
+                    alt="Copy"
+                    className="w-4"
+                    loading="lazy"
+                  />
+                )}
+              </button>
             </div>
           ))}
 

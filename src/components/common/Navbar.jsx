@@ -108,7 +108,7 @@ export default function Navbar() {
             </Link>
 
             <Link state={{ from: location.pathname }} to="/cart" className="relative">
-              <img className="w-6" src={bag} alt="bag" loading="lazy" />
+              <img className="w-5 md:w-6" src={bag} alt="bag" loading="lazy" />
               {totalItemsInCart > 0 && (
                 <span className="absolute top-[-4px] left-[13px] bg-green-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
                   {totalItemsInCart}
@@ -117,7 +117,7 @@ export default function Navbar() {
             </Link>
 
             <Link state={{ from: location.pathname }} to="/profile">
-              <img className="w-6" src={user} alt="user" loading="lazy" />
+              <img className="w-5 md:w-6" src={user} alt="user" loading="lazy" />
             </Link>
 
           </div>

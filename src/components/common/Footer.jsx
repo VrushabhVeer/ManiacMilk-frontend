@@ -35,7 +35,7 @@ const Footer = () => {
           <ul className="mt-3 space-y-1">
             {policies.map((policy, index) => (
               <li key={index} className="hover:underline">
-                {policy}
+                 <Link to={policy.path}>{policy.text}</Link>
               </li>
             ))}
           </ul>
@@ -56,13 +56,20 @@ const Footer = () => {
           <h3 className="font-semibold">Follow Us</h3>
           <div className="flex items-center gap-4 mt-3">
             {socialMedia.map((media, index) => (
-              <img
+              <a
                 key={index}
-                className="w-7"
-                src={media.src}
-                alt={media.alt}
-                loading="lazy"
-              />
+                href={media.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={media.alt}
+              >
+                <img
+                  className="w-7"
+                  src={media.src}
+                  alt={media.alt}
+                  loading="lazy"
+                />
+              </a>
             ))}
           </div>
         </div>

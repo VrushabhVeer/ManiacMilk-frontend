@@ -15,6 +15,10 @@ import Admin from "../admin/Admin";
 import PrivateRoute from "../components/login/PrivateRoute";
 import AdminLogin from "../admin/AdminLogin";
 import AdminPrivateRoute from "../admin/AdminPrivateRoute";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import TermsAndConditions from "../pages/TermsAndConditions";
+import RefundPolicy from "../pages/RefundPolicy";
+import ShippingPolicy from "../pages/ShippingPolicy";
 
 const AllRoutes = () => {
   return (
@@ -34,6 +38,10 @@ const AllRoutes = () => {
       <Route path="/confirmation" element={<Confirmation />} />
       <Route path="/placed/:orderId" element={<Placed />} />
       <Route path="*" element={<NotFound />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+      <Route path="/refund-policy" element={<RefundPolicy />} />
+      <Route path="/shipping-policy" element={<ShippingPolicy />} />
 
       {/* admin routes */}
       <Route path="/admin" element={<AdminPrivateRoute element={<Admin />} />} />

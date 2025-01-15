@@ -100,7 +100,7 @@ const ProductListing = () => {
                 <img
                   src={product.frontImage}
                   alt={product.name}
-                  className="h-24 w-[60%] object-cover m-auto rounded-sm"
+                  className="h-24 w-[40%] object-cover m-auto rounded-sm"
                 />
               </td>
               <td className="border border-gray-300 px-4 py-2 text-center">{product.name}</td>

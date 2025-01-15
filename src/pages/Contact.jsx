@@ -1,48 +1,79 @@
-import { useState } from "react";
+import emailjs from "emailjs-com";
 import rightUpArrow from "../assets/icons/rightUpArrow.png";
-import { contactUs } from "../utils/apis.js";
 import { contactInfo, address, icons } from "../utils/data.js";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import copy from "../assets/icons/copy.png";
 import check from "../assets/icons/check.png";
+import { useState } from "react";
 
 const Contact = () => {
   const [fullname, setFullname] = useState("");
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-
-  const [copiedIndex, setCopiedIndex] = useState(null); // State to track which item was copied
+  const [copiedIndex, setCopiedIndex] = useState(null);
 
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text)
       .then(() => {
-        setCopiedIndex(index); // Set the index of the copied item
-        setTimeout(() => setCopiedIndex(null), 2000); // Reset after 2 seconds
+        setCopiedIndex(index);
+        setTimeout(() => setCopiedIndex(null), 2000);
       })
       .catch((err) => {
         console.error("Failed to copy: ", err);
       });
   };
 
+  const validateForm = () => {
+    if (!fullname || !mobile || !email || !message) {
+      toast.error("Please fill out all fields.");
+      return false;
+    }
+    if (!/^[a-zA-Z ]{2,30}$/.test(fullname)) {
+      toast.error("Please enter a valid name.");
+      return false;
+    }
+    if (!/^\d{10}$/.test(mobile)) {
+      toast.error("Please enter a valid mobile number.");
+      return false;
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      toast.error("Please enter a valid email.");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const contactData = {
-      fullname,
-      mobile,
-      email,
-      message,
+
+    if (!validateForm()) {
+      return;
+    }
+
+    const templateParams = {
+      to_email: "maniacmilkstore@gmail.com",
+      from_name: fullname,
+      from_email: email,
+      message: message,
+      mobile: mobile,
     };
 
     try {
-      const response = await contactUs(contactData);
-      console.log(response);
+      await emailjs.send(
+        "service_huukivi", // Your Email.js service ID
+        "template_yzrxes8", // Your Email.js template ID
+        templateParams,
+        "XReuypQAgE-m6QxC-" // Your Email.js user ID
+      );
+      toast.success("Your message sent successfully!");
       setFullname("");
       setMobile("");
       setEmail("");
       setMessage("");
     } catch (error) {
-      console.error(error);
+      toast.error("Failed to send message. Please try again.");
+      console.error("Failed to send message:", error);
     }
   };
 
@@ -65,19 +96,9 @@ const Contact = () => {
 
               <button className="ml-2" onClick={() => handleCopy(info.text, index)}>
                 {copiedIndex === index ? (
-                  <img
-                    src={check}
-                    alt="Check"
-                    className="w-5"
-                    loading="lazy"
-                  />
+                  <img src={check} alt="Check" className="w-5" loading="lazy" />
                 ) : (
-                  <img
-                    src={copy}
-                    alt="Copy"
-                    className="w-4"
-                    loading="lazy"
-                  />
+                  <img src={copy} alt="Copy" className="w-4" loading="lazy" />
                 )}
               </button>
             </div>

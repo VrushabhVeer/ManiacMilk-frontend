@@ -8,7 +8,6 @@ const ProductModal = ({ title, onClose, onSave, product }) => {
     const [formData, setFormData] = useState({
         name: "",
         frontImage: null,
-        backImage: null,
         category: "",
         availability: "In Stock",
         unit: "Kg",
@@ -24,7 +23,16 @@ const ProductModal = ({ title, onClose, onSave, product }) => {
 
     useEffect(() => {
         if (product) {
-            setFormData(product);
+            setFormData({
+                name: product.name || "",
+                frontImage: product.frontImage || null,
+                category: product.category || "",
+                availability: product.availability || "In Stock",
+                unit: product.unit || "Kg",
+                price: product.price || 0,
+                description: product.description || "",
+                sizes: product.sizes || [],
+            });
         }
     }, [product]);
 
@@ -76,11 +84,9 @@ const ProductModal = ({ title, onClose, onSave, product }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const formDataToSend = new FormData();
-        console.log("Front Image:", formData.frontImage);
-        console.log("Back Image:", formData.backImage);
         formDataToSend.append("frontImage", formData.frontImage);
-        formDataToSend.append("backImage", formData.backImage);
         formDataToSend.append("name", formData.name);
         formDataToSend.append("category", formData.category);
         formDataToSend.append("availability", formData.availability);
@@ -89,39 +95,27 @@ const ProductModal = ({ title, onClose, onSave, product }) => {
         formDataToSend.append("price", Number(formData.price));
         formDataToSend.append("sizes", JSON.stringify(formData.sizes));
 
-        console.log("FormData to send:", Object.fromEntries(formDataToSend));
-        onSave(formDataToSend);
-
-        let payload = Object.fromEntries(formDataToSend)
-
         try {
             if (product) {
                 console.log("Updating product:", product._id);
                 await updateProduct(product._id, formDataToSend);
                 toast.success("Product updated successfully");
-            } else if(formDataToSend) {
-                console.log("Creating new product:", payload);
-                await createProduct(payload);
+            } else {
+                console.log("Creating new product:", formDataToSend);
+                await createProduct(formDataToSend);
                 toast.success("Product created successfully");
             }
-
-            onClose(); // Close modal
-
-            if (!formData.name || !formData.frontImage || !formData.category || !formData.unit || !formData.description || !formData.price) {
-                console.error("Missing required fields:", formData);
-                toast.error("Please fill in all required fields");
-                return;
-            }
-            
+            onClose(); // Close the modal
             onSave(); // Trigger parent refresh
-        } catch {
+        } catch (error) {
+            console.error("Error saving product:", error);
             toast.error("Failed to save product");
         }
     };
 
     return (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white rounded-lg w-11/12 max-w-md p-6">
+            <div className="bg-white rounded-lg w-11/12 max-w-xl p-6">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-bold">{title}</h2>
                     <img
@@ -131,72 +125,96 @@ const ProductModal = ({ title, onClose, onSave, product }) => {
                         onClick={onClose}
                     />
                 </div>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="flex items-center gap-4">
-                        <div className="w-full">
-                            <label className="block text-gray-700">Front Image</label>
-                            <input
-                                type="file"
-                                name="frontImage"
-                                accept="image/*"
-                                onChange={(e) => setFormData({ ...formData, frontImage: e.target.files[0] })}
-                                className="w-full border rounded px-3 py-2"
-                            />
-                        </div>
-                        <div className="w-full">
-                            <label className="block text-gray-700">Back Image</label>
-                            <input
-                                type="file"
-                                name="backImage"
-                                accept="image/*"
-                                onChange={(e) => setFormData({ ...formData, backImage: e.target.files[0] })}
-                                className="w-full border rounded px-3 py-2"
-                            />
-                        </div>
-                    </div>
+                <form
+                    onSubmit={handleSubmit}
+                    className="space-y-4"
+                    encType="multipart/form-data"
+                >
                     <div>
-                        <label className="block text-gray-700">Name</label>
+                        <label className="block text-sm mb-1 text-gray-700">
+                            Front Image
+                        </label>
+                        {formData.frontImage && (
+                            <div className="mb-2">
+                                {formData.frontImage instanceof File ? (
+                                    // Preview the newly selected file
+                                    <img
+                                        src={URL.createObjectURL(formData.frontImage)}
+                                        alt="Preview"
+                                        className="w-24 h-24 object-cover border border-gray-300 rounded-md"
+                                    />
+                                ) : (
+                                    // Preview the existing image (URL from product data)
+                                    <img
+                                        src={formData.frontImage}
+                                        alt="Existing Image"
+                                        className="w-24 h-24 object-cover border border-gray-300 rounded-md"
+                                    />
+                                )}
+                            </div>
+                        )}
+                        <input
+                            type="file"
+                            name="frontImage"
+                            accept="image/*"
+                            onChange={(e) =>
+                                setFormData({ ...formData, frontImage: e.target.files[0] })
+                            }
+                            className="custom-file-input"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm mb-1 text-gray-700">Name</label>
                         <input
                             type="text"
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            className="w-full p-2 border rounded-md"
+                            className="w-full p-2 border border-gray-400 rounded-md text-sm outline-none"
                             required
                         />
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">Category</label>
-                        <input
-                            type="text"
-                            name="category"
-                            value={formData.category}
-                            onChange={handleChange}
-                            className="w-full p-2 border rounded-md"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">Availability</label>
-                        <select
-                            name="availability"
-                            value={formData.availability}
-                            onChange={handleChange}
-                            className="w-full p-2 border rounded-md"
-                        >
-                            <option value="In Stock">In Stock</option>
-                            <option value="Out of Stock">Out of Stock</option>
-                        </select>
                     </div>
 
                     <div className="flex gap-4 items-center">
                         <div className="w-full">
-                            <label className="block text-gray-700">Unit</label>
+                            <label className="block text-sm mb-1 text-gray-700">
+                                Category
+                            </label>
+                            <input
+                                type="text"
+                                name="category"
+                                value={formData.category}
+                                onChange={handleChange}
+                                className="w-full p-2 border border-gray-400 rounded-md text-sm outline-none"
+                                required
+                            />
+                        </div>
+
+                        <div className="w-full">
+                            <label className="block text-sm mb-1 text-gray-700">
+                                Availability
+                            </label>
+                            <select
+                                name="availability"
+                                value={formData.availability}
+                                onChange={handleChange}
+                                className="w-full p-2 border border-gray-400 rounded-md text-sm outline-none"
+                            >
+                                <option value="In Stock">In Stock</option>
+                                <option value="Out of Stock">Out of Stock</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="flex gap-4 items-center">
+                        <div className="w-full">
+                            <label className="block text-sm mb-1 text-gray-700">Unit</label>
                             <select
                                 name="unit"
                                 value={formData.unit}
                                 onChange={handleChange}
-                                className="w-full border rounded px-3 py-2"
+                                className="w-full border border-gray-400 rounded px-3 py-2 text-sm outline-none"
                             >
                                 <option value="Kg">Kg</option>
                                 <option value="Ltr">Ltr</option>
@@ -204,7 +222,7 @@ const ProductModal = ({ title, onClose, onSave, product }) => {
                         </div>
 
                         <div className="w-full">
-                            <label className="block text-gray-700">
+                            <label className="block text-sm mb-1 text-gray-700">
                                 Price for 1 {formData.unit}
                             </label>
                             <input
@@ -212,12 +230,14 @@ const ProductModal = ({ title, onClose, onSave, product }) => {
                                 name="price"
                                 value={formData.price}
                                 onChange={handleChange}
-                                className="w-full p-2 border rounded-md"
+                                className="w-full p-2 border border-gray-400 rounded-md text-sm outline-none"
                             />
                         </div>
                     </div>
                     <div>
-                        <label className="block text-gray-700 mb-1">Choose Sizes</label>
+                        <label className="block text-sm mb-1 text-gray-700">
+                            Choose Sizes
+                        </label>
 
                         <div className="flex items-center gap-3 flex-wrap">
                             {sizeOptions[formData.unit].map((size) => (
@@ -236,16 +256,18 @@ const ProductModal = ({ title, onClose, onSave, product }) => {
                     </div>
 
                     <div>
-                        <label className="block text-gray-700">Description</label>
+                        <label className="block text-sm mb-1 text-gray-700">
+                            Description
+                        </label>
                         <textarea
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
-                            className="w-full p-2 border rounded-md"
+                            className="w-full h-28 p-2 border border-gray-400 rounded-md text-sm outline-none"
                             required
                         />
                     </div>
-                    <div className="flex justify-end gap-3 pt-5">
+                    <div className="flex justify-end gap-3">
                         <button
                             type="button"
                             onClick={onClose}

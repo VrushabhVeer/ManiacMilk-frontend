@@ -137,13 +137,20 @@ export const getAllOrders = () => axiosInstance.get("/orders/admin/allorders");
 export const getAllUsers = () => axiosInstance.get("/users/admin/allusers");
 
 export const createProduct = async (productData) => {
-  console.log("productData in createProduct api", productData);
-  return axiosInstance.post("/products/create", productData);
+  return axiosInstance.post("/products/create", productData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
 
 // Update an existing product
 export const updateProduct = async (id, productData) => {
-  return axiosInstance.put(`/products/${id}`, productData);
+  return axiosInstance.put(`/products/${id}`, productData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
 
 // Delete a product

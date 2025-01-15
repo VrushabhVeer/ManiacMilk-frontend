@@ -74,3 +74,28 @@
     width: 100%; /* Show 1 item on extra-small screens */
   }
 }
+
+
+/* app.css */
+.custom-file-input {
+  display: block;
+  width: 100%;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.custom-file-input::file-selector-button {
+  margin-right: 0.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 9999px;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: #ebf8ff;
+  color: #1d4ed8;
+}
+
+.custom-file-input::file-selector-button:hover {
+  background-color: #dbeafe;
+}

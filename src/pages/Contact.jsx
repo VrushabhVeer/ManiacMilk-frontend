@@ -61,10 +61,10 @@ const Contact = () => {
 
     try {
       await emailjs.send(
-        "service_huukivi", // Your Email.js service ID
-        "template_yzrxes8", // Your Email.js template ID
+        import.meta.env.VITE_SERVICE_ID, // Your Email.js service ID
+        import.meta.env.VITE_TEMPLATE_ID, // Your Email.js template ID
         templateParams,
-        "XReuypQAgE-m6QxC-" // Your Email.js user ID
+        import.meta.env.VITE_USER_ID // Your Email.js user ID
       );
       toast.success("Your message sent successfully!");
       setFullname("");

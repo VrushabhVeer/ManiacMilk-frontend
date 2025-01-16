@@ -14,7 +14,7 @@ import antibiotics from "../assets/icons/antibiotics.png";
 import cattle from "../assets/icons/cattle.png";
 import comma from "../assets/icons/comma.png";
 
-export const baseURL = "http://localhost:8000/";
+export const baseURL = import.meta.env.VITE_BASE_URL;
 
 export const aboutContent = {
   header: "About Us",
@@ -106,9 +106,9 @@ export const socialMedia = [
 ];
 
 export const address = [
-  "205, Ugam tower,",
-  "Shantinagar, Gandhi Marg,",
-  "Karanja, Maharashtra 444105.",
+  "Maniacmilk Store,",
+  "Lokmanya Nagar, Karanja (Lad),",
+  "Maharashtra 444105.",
 ];
 
 // Contact.jsx

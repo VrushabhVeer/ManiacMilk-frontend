@@ -101,8 +101,8 @@ const Address = ({ isConfirmation }) => {
             dispatch(setAddress(response.data)); // Update Redux state
           }
         })
-        .catch(() => {
-          toast.error("Failed to fetch address.");
+        .catch((error) => {
+          console.log(error)
         })
         .finally(() => setLoading(false));
     } else {
@@ -122,7 +122,6 @@ const Address = ({ isConfirmation }) => {
     if (isAuthenticated && addressId) {
       deleteAddress(addressId)
         .then(() => {
-          // dispatch(setAddress({})); // Clear Redux state
           dispatch(clearReduxAddress());
           toast.success("Address deleted successfully!");
         })
@@ -281,9 +280,8 @@ const Address = ({ isConfirmation }) => {
                 <div className="w-full">
                   <input
                     placeholder="Firstname"
-                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                      errors.firstname ? "border-red-500" : "border-gray-400"
-                    }`}
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.firstname ? "border-red-500" : "border-gray-400"
+                      }`}
                     type="text"
                     name="firstname"
                     value={formData.firstname}
@@ -299,9 +297,8 @@ const Address = ({ isConfirmation }) => {
                 <div className="w-full">
                   <input
                     placeholder="Lastname"
-                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                      errors.lastname ? "border-red-500" : "border-gray-400"
-                    }`}
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.lastname ? "border-red-500" : "border-gray-400"
+                      }`}
                     type="text"
                     name="lastname"
                     value={formData.lastname}
@@ -318,9 +315,8 @@ const Address = ({ isConfirmation }) => {
               <div className="mt-4">
                 <input
                   placeholder="Mobile No"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                    errors.mobile ? "border-red-500" : "border-gray-400"
-                  }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.mobile ? "border-red-500" : "border-gray-400"
+                    }`}
                   type="text"
                   name="mobile"
                   value={formData.mobile}
@@ -334,9 +330,8 @@ const Address = ({ isConfirmation }) => {
               <div className="mt-4">
                 <input
                   placeholder="Email Address"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                    errors.email ? "border-red-500" : "border-gray-400"
-                  }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.email ? "border-red-500" : "border-gray-400"
+                    }`}
                   type="email"
                   name="email"
                   value={formData.email}
@@ -350,9 +345,8 @@ const Address = ({ isConfirmation }) => {
               <div className="mt-4">
                 <input
                   placeholder="House/Flat No"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                    errors.house ? "border-red-500" : "border-gray-400"
-                  }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.house ? "border-red-500" : "border-gray-400"
+                    }`}
                   type="text"
                   name="house"
                   value={formData.house}
@@ -366,9 +360,8 @@ const Address = ({ isConfirmation }) => {
               <div className="mt-4">
                 <input
                   placeholder="Area/Colony"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                    errors.area ? "border-red-500" : "border-gray-400"
-                  }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.area ? "border-red-500" : "border-gray-400"
+                    }`}
                   type="text"
                   name="area"
                   value={formData.area}
@@ -383,9 +376,8 @@ const Address = ({ isConfirmation }) => {
                 <div className="w-full">
                   <input
                     placeholder="City"
-                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                      errors.city ? "border-red-500" : "border-gray-400"
-                    }`}
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.city ? "border-red-500" : "border-gray-400"
+                      }`}
                     type="text"
                     name="city"
                     value={formData.city}
@@ -399,9 +391,8 @@ const Address = ({ isConfirmation }) => {
                 <div className="w-full">
                   <input
                     placeholder="Pin Code"
-                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                      errors.pincode ? "border-red-500" : "border-gray-400"
-                    }`}
+                    className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.pincode ? "border-red-500" : "border-gray-400"
+                      }`}
                     type="text"
                     name="pincode"
                     value={formData.pincode}
@@ -418,9 +409,8 @@ const Address = ({ isConfirmation }) => {
               <div className="mt-4">
                 <input
                   placeholder="State"
-                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${
-                    errors.state ? "border-red-500" : "border-gray-400"
-                  }`}
+                  className={`w-full bg-inherit rounded-md border outline-none px-5 py-3 ${errors.state ? "border-red-500" : "border-gray-400"
+                    }`}
                   type="text"
                   name="state"
                   value={formData.state}

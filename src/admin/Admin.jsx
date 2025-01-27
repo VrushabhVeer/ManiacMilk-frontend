@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getAllUsers, getAllOrders, updateOrderStatusAPI } from "../utils/apis";
 import Users from "./Users";
 import AllOrders from "./AllOrders";
+import PendingOrders from "./PendingOrders";
 import CompletedOrders from "./CompletedOrders";
 import ProductListing from "./ProductListing";
 
@@ -37,7 +38,7 @@ const Admin = () => {
         }
       };
       fetchUsers();
-    } else if (view === "orders" || view === "completedOrders") {
+    } else if (view === "orders" || view === "PendingOrders" || view === "completedOrders") {
       const fetchOrders = async () => {
         try {
           const response = await getAllOrders();
@@ -85,9 +86,9 @@ const Admin = () => {
           Users
         </button>
         <button
-          className={`px-4 py-2 rounded ${view === "orders" ? "bg-blue-500 text-white" : "bg-gray-200"
+          className={`px-4 py-2 rounded ${view === "PendingOrders" ? "bg-blue-500 text-white" : "bg-gray-200"
             }`}
-          onClick={() => setView("orders")}
+          onClick={() => setView("PendingOrders")}
         >
           Pending Orders
         </button>
@@ -98,7 +99,13 @@ const Admin = () => {
         >
           Completed Orders
         </button>
-
+        <button
+          className={`px-4 py-2 rounded ${view === "orders" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
+          onClick={() => setView("orders")}
+        >
+          All Orders
+        </button>
         <button
           className={`px-4 py-2 rounded ${view === "productListing" ? "bg-blue-500 text-white" : "bg-gray-200"
             }`}
@@ -110,20 +117,26 @@ const Admin = () => {
 
       {/* Content Rendering */}
       {view === "users" && <Users users={users} />}
-      {view === "orders" && (
-        <AllOrders
-          orders={orders.filter((order) => order.status !== "Completed")}
-          formatDate={formatDate}
-          handleToggleCompletion={handleToggleCompletion}
+      {view === "PendingOrders" && (
+        <PendingOrders
+        orders={orders.filter((order) => order.status !== "Completed")}
+        formatDate={formatDate}
+        handleToggleCompletion={handleToggleCompletion}
         />
       )}
       {view === "completedOrders" && (
         <CompletedOrders
-          orders={orders.filter((order) => order.status === "Completed")}
-          formatDate={formatDate}
+        orders={orders.filter((order) => order.status === "Completed")}
+        formatDate={formatDate}
         />
       )}
-
+      {view === "orders" && (
+        <AllOrders
+          orders={orders}
+          formatDate={formatDate}
+          handleToggleCompletion={handleToggleCompletion}
+        />
+      )}
       {view === "productListing" && (
         <ProductListing />
       )}

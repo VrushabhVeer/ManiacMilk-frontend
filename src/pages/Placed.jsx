@@ -70,7 +70,7 @@ const Placed = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-[#1a1d20]">Order Placed</h1>
-            <h3>Thank you, <span className="text-orange-500 font-medium text-lg">{address?.fullname}</span>, for shopping with us!</h3>
+            <h3>Thank you <span className="text-orange-500 font-medium text-lg">{address?.firstname} {address?.lastname}</span>, for shopping with us!</h3>
           </div>
         </div>
 

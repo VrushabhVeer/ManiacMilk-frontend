@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 
-const AllOrders = ({ orders, formatDate, handleToggleCompletion }) => {
+const AllOrders = ({ orders, formatDate }) => {
   const itemsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -47,7 +47,6 @@ const AllOrders = ({ orders, formatDate, handleToggleCompletion }) => {
                   <th className="border px-4 py-2">Total Ammount</th>
                   <th className="border px-4 py-2">Status</th>
                   <th className="border px-4 py-2">Created At</th>
-                  <th className="border px-4 py-2">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -60,36 +59,15 @@ const AllOrders = ({ orders, formatDate, handleToggleCompletion }) => {
                     <td className="border px-4 py-2 text-sm">{order._id}</td>
                     <td className="border px-4 py-2 text-sm">{order.userId}</td>
                     <td className="border px-4 py-2">₹ {order.total}</td>
-                    <td className="border px-4 py-2">{order.status}</td>
-                    <td className="border px-4 py-2 text-sm">{formatDate(order.createdAt)}</td>
-                    <td className="border px-4 py-2">
-                      <button
-                        className={`px-4 py-2 rounded-full text-[12px] font-medium tracking-wide ${
+                    <td  className={`border px-4 py-2 cursor-not-allowed ${
                           order.status === "Completed"
                             ? "bg-green-500 text-white"
                             : order.status === "Cancelled"
-                            ? "bg-red-500 text-white cursor-not-allowed"
-                            : "bg-black text-white hover:bg-gray-700"
-                        }`}
-                        onClick={() => {
-                          if (
-                            order.status !== "Completed" &&
-                            order.status !== "Cancelled"
-                          ) {
-                            handleToggleCompletion(order._id);
-                          }
-                        }}
-                        disabled={
-                          order.status === "Completed" || order.status === "Cancelled"
-                        }
-                      >
-                        {order.status === "Completed"
-                          ? "Completed"
-                          : order.status === "Cancelled"
-                          ? "Cancelled"
-                          : "Mark Complete"}
-                      </button>
-                    </td>
+                            ? "bg-red-500 text-white"
+                            : "bg-black text-white"
+                        }`}>{order.status}</td>
+                    <td className="border px-4 py-2 text-sm">{formatDate(order.createdAt)}</td>
+                    
                   </tr>
                 ))}
               </tbody>

@@ -107,8 +107,8 @@ export const socialMedia = [
 
 export const address = [
   "Maniacmilk Store,",
-  "Lokmanya Nagar, Karanja (Lad),",
-  "Maharashtra 444105.",
+  "Lokmanya Nagar,",
+  "Maharashtra 444105"
 ];
 
 // Contact.jsx

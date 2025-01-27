@@ -132,6 +132,9 @@ export default function Navbar() {
               <Link state={{ from: location.pathname }} to="/products">
                 <p>Products</p>{" "}
               </Link>
+              <Link state={{ from: location.pathname }} to="/about">
+                <p>About</p>{" "}
+              </Link>
               <Link state={{ from: location.pathname }} to="/contact">
                 <p>Contact Us</p>{" "}
               </Link>

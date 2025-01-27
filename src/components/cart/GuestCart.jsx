@@ -192,7 +192,7 @@ const GuestCart = () => {
                                 </div>
                                 <div className="flex justify-between">
                                     <p>Shipping</p>
-                                    <p>₹ {shipping}</p>
+                                    <p>{shipping === 0 ? "Free" : `₹ ${shipping}`}</p>
                                 </div>
                                 <div className="flex justify-between border-t pt-4">
                                     <p className="font-medium">Total</p>

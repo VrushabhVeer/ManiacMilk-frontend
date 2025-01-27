@@ -172,7 +172,7 @@ export const selectCartDetails = (state) => {
   const subtotal = cart.reduce((total, item) => {
     return total + parseFloat((item.selectedSize?.price || 0) * item.quantity);
   }, 0);
-  const shipping = cart.length > 0 ? 20 : 0;
+  const shipping = cart.length > 0 ? 0 : 0;
   const total = subtotal + shipping;
   const totalItemsInCart = cart.reduce(
     (total, item) => total + item.quantity,

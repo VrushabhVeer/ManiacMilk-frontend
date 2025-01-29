@@ -19,7 +19,6 @@ const AdminLogin = () => {
 
     try {
       const response = await adminLogin(payload);
-      console.log("response of admin login", response.data);
       localStorage.setItem("adminToken", response.data.token);
       toast.success("Login successful!");
       navigate("/admin");

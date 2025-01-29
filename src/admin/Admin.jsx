@@ -65,8 +65,6 @@ const Admin = () => {
             : order
         )
       );
-
-      console.log(`Order status updated to ${updatedStatus}`);
     } catch (error) {
       console.error("Error updating order status:", error.message);
     }

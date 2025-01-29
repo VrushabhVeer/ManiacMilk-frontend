@@ -8,8 +8,6 @@ const Login = () => {
   const location = useLocation();
   const redirectPath = location.state?.from || "/";
 
-  console.log("Login location state: login page", location.state);
-
   return (
     <div>
       {!email ? (

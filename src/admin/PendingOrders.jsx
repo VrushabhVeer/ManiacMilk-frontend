@@ -19,8 +19,6 @@ const PendingOrders = ({ orders, formatDate, handleToggleCompletion }) => {
         }
     };
 
-    console.log("first", orders);
-
     const toggleExpand = (orderId) => {
         setExpandedOrderId((prev) => (prev === orderId ? null : orderId));
     };

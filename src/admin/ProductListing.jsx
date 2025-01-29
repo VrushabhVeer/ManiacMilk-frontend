@@ -16,7 +16,6 @@ const ProductListing = () => {
     try {
       const response = await getAllProducts();
       setProducts(response.data);
-      console.log("product listing", response.data);
     } catch {
       toast.error("Failed to fetch products");
     }

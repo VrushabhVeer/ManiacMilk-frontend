@@ -67,8 +67,6 @@ const Products = () => {
       items: [cartItem],
     };
 
-    console.log("cart item from products", payload);
-
     if (isAuthenticated) {
       try {
         await addToCartAPI(payload);

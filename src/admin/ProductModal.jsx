@@ -92,11 +92,9 @@ const ProductModal = ({ title, onClose, onSave, product }) => {
 
         try {
             if (product) {
-                console.log("Updating product:", product._id);
                 await updateProduct(product._id, formDataToSend);
                 toast.success("Product updated successfully");
             } else {
-                console.log("Creating new product:", formDataToSend);
                 await createProduct(formDataToSend);
                 toast.success("Product created successfully");
             }

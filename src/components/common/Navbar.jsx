@@ -90,10 +90,13 @@ export default function Navbar() {
           </div>
 
           <div className="flex space-x-5">
+            <div className="hidden md:hidden lg:flex">
+
             <Link to="/login">
               <p className="font-medium">{isAuthenticated ? "Logout" : "Login"}</p>
               <p className="text-[11px] mt-[-3px]">{profile?.firstname}</p>
             </Link>
+            </div>
 
             <Link state={{ from: location.pathname }} to="/cart" className="relative">
               <img className="w-5 md:w-6" src={bag} alt="bag" loading="lazy" />

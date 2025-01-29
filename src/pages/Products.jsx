@@ -106,13 +106,13 @@ const Products = () => {
         {loading ? (
           <Loader />
         ) : (
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-20 mt-20">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-16 gap-y-20 mt-20">
             {filteredProducts.map((product) => (
               <div key={product._id}>
                 <Link to={`/products/${product._id}`}>
                   <div className="relative">
                     <img
-                      className="w-full h-[40vh] md:h-[30vh] object-cover"
+                      className="w-full h-[46vh] md:h-[46vh] object-cover"
                       src={product.frontImage}
                       alt={product.name}
                       loading="lazy"
@@ -141,7 +141,7 @@ const Products = () => {
                 <button
                   onClick={() => handleCart(product)}
                   disabled={product.availability === "Out of Stock"}
-                  className={`w-full py-3 tracking-wide font-medium rounded-sm text-sm mt-2 ${
+                  className={`w-full py-3 tracking-wide font-medium rounded-sm text-sm ${
                     product.availability === "Out of Stock"
                       ? "bg-green-900 cursor-not-allowed text-white"
                       : "bg-green-900 text-white"

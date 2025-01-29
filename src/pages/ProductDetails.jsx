@@ -105,7 +105,7 @@ const ProductDetails = () => {
 
   return (
     <div className="hero">
-      <div className="w-11/12 md:w-10/12 mx-auto pt-10 pb-10 md:pb-20">
+      <div className="w-11/12 md:w-8/12 mx-auto pt-10 pb-10 md:pb-20">
         <div className="flex flex-col md:flex-col lg:flex-row xl:flex-row items-center gap-10 md:gap-20">
           <div className="w-full">
             <img

@@ -64,7 +64,7 @@ const Products = () => {
             <div className="relative">
               <Link to={`/products/${product._id}`}>
                 <img
-                  className="w-full h-[40vh] md:h-[30vh] object-cover"
+                  className="w-full h-[46vh] md:h-[46vh] object-cover"
                   src={product.frontImage}
                   alt={product.name}
                   loading="lazy"
@@ -93,7 +93,7 @@ const Products = () => {
             <button
               onClick={() => handleCart(product)}
               disabled={product.availability === "Out of Stock"}
-              className={`bg-green-900 text-white w-full py-3 tracking-wide font-medium rounded-md text-sm mt-3 ${
+              className={`bg-green-900 text-white w-full py-3 tracking-wide font-medium rounded-md text-sm ${
                 product.availability === "Out of Stock"
                   ? "bg-green-900 cursor-not-allowed text-white"
                   : ""

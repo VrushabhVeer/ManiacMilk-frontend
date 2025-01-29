@@ -17,15 +17,15 @@ const Footer = () => {
               loading="lazy"
             />
           </Link>
-          <p className="mt-1 text-sm">Fresh from Farm to You.</p>
+          <p className="mt-2 text-[12px] md:text-sm">Fresh from Farm to You.</p>
         </div>
 
         {/* Policy Section */}
         <div>
           <h3 className="font-semibold">Policy</h3>
-          <ul className="mt-3 space-y-1">
+          <ul className="mt-2 md:mt-3 space-y-1">
             {policies.map((policy, index) => (
-              <li key={index} className="hover:underline">
+              <li key={index} className="hover:underline text-sm md:text-base">
                  <Link to={policy.path}>{policy.text}</Link>
               </li>
             ))}
@@ -35,9 +35,9 @@ const Footer = () => {
         {/* Address Section */}
         <div>
           <h3 className="font-semibold">Address</h3>
-          <address className="mt-3 space-y-1">
+          <address className="mt-2 md:mt-3 space-y-1">
             {address.map((line, index) => (
-              <p key={index}>{line}</p>
+              <p key={index} className="text-sm md:text-base">{line}</p>
             ))}
           </address>
         </div>
@@ -45,7 +45,7 @@ const Footer = () => {
         {/* Social Media Section */}
         <div>
           <h3 className="font-semibold">Follow Us</h3>
-          <div className="flex items-center gap-4 mt-3">
+          <div className="flex items-center gap-4 mt-2 md:mt-3">
             {socialMedia.map((media, index) => (
               <a
                 key={index}
@@ -68,7 +68,7 @@ const Footer = () => {
 
       {/* Footer Bottom */}
       <div className="text-center py-4 border-t border-gray-400">
-        <p className="text-sm">Copyright © Maniac Milk, {currentYear}</p>
+        <p className="text-[12px] md:text-sm">Copyright © Maniac Milk, {currentYear}</p>
       </div>
     </footer>
   );

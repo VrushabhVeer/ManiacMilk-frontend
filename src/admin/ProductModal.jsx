@@ -49,19 +49,14 @@ const ProductModal = ({ title, onClose, onSave, product }) => {
     const calculatePrice = (size) => {
         const basePrice = parseFloat(formData.price);
         if (size === "1kg" || size === "1ltr") {
-            // Directly use the base price for 1kg or 1ltr
-            return basePrice;
+            return Math.ceil(basePrice); // Ensure even the base price is rounded up
         }
-
+    
         const sizeValue = parseInt(size.replace(/[^\d]/g, ""), 10); // Extract numerical value
-        const isKg = formData.unit === "Kg";
-
-        if (isKg) {
-            return (basePrice * sizeValue) / 1000; // Convert gm to price
-        } else {
-            return (basePrice * sizeValue) / 1000; // Convert ml to price
-        }
-    };
+        const calculatedPrice = (basePrice * sizeValue) / 1000; // Calculate price for smaller units
+    
+        return Math.ceil(calculatedPrice); // Round up the price to the nearest integer
+    };    
 
     const handleSizeToggle = (size) => {
         const currentSizes = formData.sizes;

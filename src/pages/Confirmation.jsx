@@ -1,6 +1,5 @@
 import { useState } from "react";
 import rightUpArrow from "../assets/icons/rightUpArrow.png";
-import logo from "../assets/icons/cow.png";
 import CartItems from "../components/common/CartItems";
 import Address from "../components/common/Address";
 import {
@@ -95,7 +94,7 @@ const Confirmation = () => {
         currency: "INR",
         name: "Maniac Milk Store",
         description: "Order Confirmation",
-        image: logo,
+        image: "https://res.cloudinary.com/dhiyldjuk/image/upload/v1738132433/Adobe_Express_-_file_jkhhqv.png",
         order_id: paymentOrder.order.id,
         callback_url: CALLBACK_URL,
         prefill: {
@@ -103,8 +102,8 @@ const Confirmation = () => {
           email: address.email,
           contact: address.mobile,
         },
-        notes: { address: "Maniac Milk Store Headquarters" },
-        theme: { color: "#000000" },
+        notes: { address: "Maniac Milk Store, Plot No 45, Lokmanya Nagar, Karanja Lad, Maharashtra - 444105, India" },
+        theme: { color: "#15532e" },
         handler: async (response) => {
           try {
             await handlePaymentVerification(response);

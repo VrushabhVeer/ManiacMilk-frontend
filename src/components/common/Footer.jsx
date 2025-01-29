@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import logo from "../../assets/icons/cow.png";
 import { policies, socialMedia, address } from "../../utils/data.js";
 
 const Footer = () => {
@@ -12,19 +11,11 @@ const Footer = () => {
         <div>
           <Link to="/" className="flex items-center gap-2">
             <img
-              className="w-6 md:w-8"
-              src={logo}
-              alt="Maniac Milk Logo"
+              className="w-16 md:w-24"
+              src="https://res.cloudinary.com/dhiyldjuk/image/upload/v1738132433/Adobe_Express_-_file_jkhhqv.png"
+              alt="logo"
               loading="lazy"
             />
-            <div>
-              <h1 className="font-gloria text-[#b5c6f9] text-sm md:text-base tracking-tight">
-                maniac
-              </h1>
-              <h1 className="font-gloria text-[#b5c6f9] text-sm md:text-base tracking-tight mt-[-6px]">
-                milk
-              </h1>
-            </div>
           </Link>
           <p className="mt-1 text-sm">Fresh from Farm to You.</p>
         </div>

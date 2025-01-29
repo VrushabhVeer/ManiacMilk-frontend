@@ -11,7 +11,7 @@ const Footer = () => {
         <div>
           <Link to="/" className="flex items-center gap-2">
             <img
-              className="w-20 md:w-24"
+              className="w-24"
               src="https://res.cloudinary.com/dhiyldjuk/image/upload/v1738132433/Adobe_Express_-_file_jkhhqv.png"
               alt="logo"
               loading="lazy"

@@ -82,19 +82,18 @@ const Products = () => {
   };
 
   return (
-    <>
-      <div className="w-11/12 md:w-10/12 mx-auto mt-10 mb-20">
-        <h1 className="text-4xl font-extrabold">Our Products</h1>
+    <div className="w-full hero pt-10 pb-20">
+      <div className="w-11/12 md:w-10/12 mx-auto">
+        <h1 className="text-2xl md:text-4xl font-extrabold">Our Products</h1>
 
         <div className="flex flex-wrap gap-4 mt-5">
           {categories.map((category) => (
             <div
               key={category}
-              className={`cursor-pointer px-5 py-2 border border-gray-300 rounded-full ${
-                selectedCategory === category
-                  ? "bg-green-200"
-                  : "bg-green-50 hover:bg-green-100"
-              }`}
+              className={`cursor-pointer px-5 py-2 border text-sm border-gray-300 rounded-full ${selectedCategory === category
+                ? "bg-green-200"
+                : "bg-green-50 hover:bg-green-100"
+                }`}
               onClick={() => handleCategoryClick(category)}
             >
               {category}
@@ -118,11 +117,10 @@ const Products = () => {
                       loading="lazy"
                     />
                     <div
-                      className={`text-white font-semibold text-[11px] absolute top-0 left py-1.5 px-2 ${
-                        product.availability === "Out of Stock"
-                          ? "bg-red-500"
-                          : "bg-yellow-500"
-                      }`}
+                      className={`text-white font-semibold text-[11px] absolute top-0 left py-1.5 px-2 ${product.availability === "Out of Stock"
+                        ? "bg-red-500"
+                        : "bg-yellow-500"
+                        }`}
                     >
                       {product.availability}
                     </div>
@@ -141,11 +139,10 @@ const Products = () => {
                 <button
                   onClick={() => handleCart(product)}
                   disabled={product.availability === "Out of Stock"}
-                  className={`w-full py-3 tracking-wide font-medium rounded-sm text-sm ${
-                    product.availability === "Out of Stock"
-                      ? "bg-green-900 cursor-not-allowed text-white"
-                      : "bg-green-900 text-white"
-                  }`}
+                  className={`w-full py-3 tracking-wide font-medium rounded-sm text-sm ${product.availability === "Out of Stock"
+                    ? "bg-green-900 cursor-not-allowed text-white"
+                    : "bg-green-900 text-white"
+                    }`}
                 >
                   Add to Cart
                 </button>
@@ -160,7 +157,7 @@ const Products = () => {
         )}
       </div>
       <Toaster position="bottom-center" />
-    </>
+    </div>
   );
 };
 

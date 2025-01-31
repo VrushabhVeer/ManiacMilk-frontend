@@ -81,7 +81,7 @@ const Contact = () => {
     <div className="hero w-full pb-20 pt-10">
       <div className="w-11/12 mx-auto flex flex-col md:flex-col lg:flex-row xl:flex-row items-center gap-10 md:gap-20">
         <div className="w-full">
-          <h1 className="text-4xl font-extrabold text-[#1a1d20]">Contact Us</h1>
+          <h1 className="text-2xl md:text-4xl font-extrabold text-[#1a1d20]">Contact Us</h1>
           <p className="mt-2 mb-10 text-gray-600">
             We’d love to hear from you! Whether you have questions, feedback, or
             need assistance, feel free to reach out through the form below. You

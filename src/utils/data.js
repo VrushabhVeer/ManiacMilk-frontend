@@ -102,7 +102,7 @@ export const socialMedia = [
     alt: "Instagram",
     link: "https://www.instagram.com/maniacmilk/",
   },
-  { src: whatsapp, alt: "WhatsApp", link: "https://wa.me/917972344762" },
+  { src: whatsapp, alt: "WhatsApp", link: "https://wa.me/919209808088" },
 ];
 
 export const address = [
@@ -115,7 +115,7 @@ export const address = [
 
 // Contact.jsx
 export const contactInfo = [
-  { icon: call, label: "Phone", text: "+91 7972 344762", alt: "Call Icon" },
+  { icon: call, label: "Phone", text: "+91 9209808088", alt: "Call Icon" },
   {
     icon: email,
     label: "Email",

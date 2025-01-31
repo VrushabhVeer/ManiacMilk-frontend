@@ -145,7 +145,7 @@ const AuthCart = () => {
                                         <img
                                             src={item.frontImage}
                                             alt={item.name}
-                                            className="w-32 h-32 object-cover rounded"
+                                            className="w-32 h-38 object-cover rounded"
                                         />
                                         <div className="flex-1">
                                             <h3 className="text-lg font-bold">{item.name}</h3>
